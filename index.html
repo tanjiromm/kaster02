@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kaster_02 - النجم</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -39,7 +40,6 @@
             transition: background 0.8s ease;
         }
 
-        /* النجوم - تظهر فقط في Dark Mode */
         .stars {
             position: fixed;
             top: 0;
@@ -63,7 +63,6 @@
             animation: twinkle 3s infinite;
         }
 
-        /* القمر */
         .moon {
             position: absolute;
             top: 10%;
@@ -93,7 +92,6 @@
             border-radius: 50%;
         }
 
-        /* الشمس */
         .sun {
             position: absolute;
             top: 10%;
@@ -114,7 +112,6 @@
             opacity: 1;
         }
 
-        /* الشهب - تظهر فقط في Dark Mode */
         .meteor {
             position: absolute;
             background: linear-gradient(90deg, white, transparent);
@@ -129,7 +126,6 @@
             opacity: 0;
         }
 
-        /* الغيوم الجديدة - تظهر فقط في Light Mode */
         .cloud {
             position: absolute;
             z-index: 2;
@@ -151,7 +147,6 @@
                 inset 0 0 20px rgba(255, 255, 255, 0.9);
         }
 
-        /* غيوم بأحجام وأشكال مختلفة */
         .cloud-1::before {
             width: 120px;
             height: 60px;
@@ -212,7 +207,6 @@
             filter: blur(7px);
         }
 
-        /* الكواكب - تظهر فقط في Dark Mode */
         .planet {
             position: absolute;
             border-radius: 50%;
@@ -226,7 +220,6 @@
             opacity: 0;
         }
 
-        /* المربع الرئيسي */
         .profile-container {
             position: absolute;
             top: 50%;
@@ -246,13 +239,11 @@
             transition: all 0.8s ease;
         }
 
-        /* تأثيرات حول المربع */
         @keyframes containerGlow {
             0%, 100% { box-shadow: 0 25px 50px var(--shadow-color), 0 0 0px rgba(114, 137, 218, 0.5); }
             50% { box-shadow: 0 25px 50px var(--shadow-color), 0 0 30px rgba(114, 137, 218, 0.8); }
         }
 
-        /* صورة البروفايل - دائرة الديسكورد */
         .avatar-section {
             margin-bottom: 20px;
         }
@@ -285,7 +276,6 @@
             box-shadow: 0 0 45px rgba(114, 137, 218, 0.8);
         }
 
-        /* المعلومات */
         .info-section {
             margin-bottom: 25px;
         }
@@ -350,7 +340,6 @@
             margin-bottom: 5px;
         }
 
-        /* السوشال ميديا */
         .social-section {
             display: flex;
             justify-content: center;
@@ -376,7 +365,6 @@
             position: relative;
         }
 
-        /* إزالة السهم من الروابط */
         .social-icon::after {
             display: none !important;
         }
@@ -387,7 +375,6 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
-        /* ألوان الأيقونات */
         .youtube { background: rgba(255, 0, 0, 0.3) !important; }
         .instagram { background: rgba(225, 48, 108, 0.3) !important; }
         .snapchat { background: rgba(255, 252, 0, 0.3) !important; }
@@ -399,14 +386,12 @@
         .fortnite-gg { background: rgba(255, 165, 0, 0.3) !important; }
         .fortnite { background: rgba(148, 51, 255, 0.3) !important; }
 
-        /* أيقونة فورتنايت - حجم أصغر */
         .fortnite img {
             width: 50% !important;
             height: 50% !important;
             object-fit: contain;
         }
 
-        /* تأثير مطر النجوم */
         .star-rain {
             position: fixed;
             top: 0;
@@ -427,7 +412,6 @@
             animation: starFall 1s linear forwards;
         }
 
-        /* زر التبديل */
         .theme-toggle {
             position: fixed;
             top: 20px;
@@ -457,7 +441,6 @@
             transition: all 0.3s ease;
         }
 
-        /* زر QR Code */
         .qr-toggle {
             position: fixed;
             top: 85px;
@@ -486,7 +469,6 @@
             color: var(--text-color);
         }
 
-        /* QR Code Modal */
         .qr-modal {
             position: fixed;
             top: 0;
@@ -560,7 +542,6 @@
             transform: scale(1.05);
         }
 
-        /* عداد الزوار */
         .visitor-counter {
             position: fixed;
             bottom: 20px;
@@ -589,7 +570,6 @@
             text-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
         }
 
-        /* Animations */
         @keyframes twinkle {
             0%, 100% { opacity: 0; transform: scale(0.5); }
             50% { opacity: 1; transform: scale(1); }
@@ -638,7 +618,6 @@
     </style>
 </head>
 <body data-theme="dark">
-    <!-- الخلفية الفلكية -->
     <div class="stars" id="starsContainer"></div>
     <div class="moon"></div>
     <div class="sun"></div>
@@ -646,20 +625,16 @@
     <div id="cloudsContainer"></div>
     <div id="planetsContainer"></div>
     
-    <!-- تأثير مطر النجوم -->
     <div class="star-rain" id="starRain"></div>
     
-    <!-- زر التبديل -->
     <div class="theme-toggle" id="themeToggle">
         <i class="fas fa-moon"></i>
     </div>
     
-    <!-- زر QR Code -->
     <div class="qr-toggle" id="qrToggle">
         <i class="fas fa-qrcode"></i>
     </div>
     
-    <!-- QR Code Modal -->
     <div class="qr-modal" id="qrModal">
         <div class="qr-content">
             <h3>📱 مشاركة الموقع</h3>
@@ -678,16 +653,13 @@
         </div>
     </div>
     
-    <!-- المربع الرئيسي -->
     <div class="profile-container">
-        <!-- الصورة - دائرة الديسكورد -->
         <div class="avatar-section">
             <div class="avatar" onclick="openDiscord()">
                 <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" alt="Discord" class="avatar-img">
             </div>
         </div>
         
-        <!-- المعلومات -->
         <div class="info-section">
             <div class="username" onclick="openDiscord()">Kaster_02</div>
             <div class="discord-tag" onclick="openDiscord()">@Kaster_02</div>
@@ -698,7 +670,6 @@
             </div>
         </div>
         
-        <!-- السوشال ميديا -->
         <div class="social-section">
             <a href="https://www.youtube.com/@kaster_02I" target="_blank" class="social-icon youtube" onclick="createStarRain(event)">
                 <i class="fab fa-youtube"></i>
@@ -724,52 +695,42 @@
             <a href="#" onclick="openDiscord(); createStarRain(event)" class="social-icon discord">
                 <i class="fab fa-discord"></i>
             </a>
-            <!-- فورتنايت GG - وجه مبتسم -->
             <a href="https://fortnite.gg/creator?name=tnv" target="_blank" class="social-icon fortnite-gg" onclick="createStarRain(event)">
                 <i class="fas fa-smile"></i>
             </a>
-            <!-- فورتنايت - أيقونة الموقع الرسمي بحجم أصغر -->
             <a href="https://www.fortnite.com/@tnv?lang=ar" target="_blank" class="social-icon fortnite" onclick="createStarRain(event)">
                 <img src="https://static-assets-prod.epicgames.com/fortnite/static/favicon.ico" alt="Fortnite">
             </a>
         </div>
     </div>
 
-    <!-- عداد الزوار -->
     <div class="visitor-counter">
         <i class="fas fa-eye"></i>
         <span class="visitor-count" id="visitorCount">1</span> زائر
     </div>
 
-    <!-- نظام تتبع الزوار -->
     <script src="https://cdn.counter.dev/script.js" data-id="kaster-02-profile" data-utcoffset="3"></script>
     
     <script>
-        // نظام Dark/Light Mode
         function initTheme() {
             const themeToggle = document.getElementById('themeToggle');
             const themeIcon = themeToggle.querySelector('i');
             const body = document.body;
             
-            // التحقق من تفضيلات النظام
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             if (!prefersDark) {
                 body.setAttribute('data-theme', 'light');
                 themeIcon.className = 'fas fa-sun';
             }
             
-            // تبديل الوضع
             themeToggle.addEventListener('click', () => {
                 const isDark = body.getAttribute('data-theme') === 'dark';
                 body.setAttribute('data-theme', isDark ? 'light' : 'dark');
                 themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-                
-                // صوت التبديل
                 playToggleSound();
             });
         }
 
-        // تأثير مطر النجوم
         function createStarRain(event) {
             const starRain = document.getElementById('starRain');
             const rect = event.currentTarget.getBoundingClientRect();
@@ -793,7 +754,6 @@
             }, 1000);
         }
 
-        // صوت التبديل
         function playToggleSound() {
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = audioContext.createOscillator();
@@ -812,7 +772,6 @@
             oscillator.stop(audioContext.currentTime + 0.3);
         }
 
-        // QR Code
         function initQRCode() {
             const qrToggle = document.getElementById('qrToggle');
             const qrModal = document.getElementById('qrModal');
@@ -845,7 +804,6 @@
             }
         }
 
-        // حساب العمر تلقائي
         function calculateAge() {
             const birthDate = new Date(2005, 2, 26);
             const today = new Date();
@@ -863,7 +821,6 @@
             document.querySelector('.age').textContent = `العمر: ${age} سنة`;
         }
 
-        // إنشاء النجوم
         function createStars() {
             const starsContainer = document.getElementById('starsContainer');
             const starCount = 300;
@@ -887,7 +844,6 @@
             }
         }
 
-        // إنشاء الشهب
         function createMeteors() {
             const meteorsContainer = document.getElementById('meteorsContainer');
             const meteorCount = 8;
@@ -908,7 +864,6 @@
             }
         }
 
-        // إنشاء الغيوم الجديدة
         function createClouds() {
             const cloudsContainer = document.getElementById('cloudsContainer');
             const cloudCount = 8;
@@ -917,7 +872,6 @@
                 const cloud = document.createElement('div');
                 cloud.classList.add('cloud');
                 
-                // أنواع مختلفة من الغيوم
                 const cloudType = `cloud-${Math.floor(Math.random() * 3) + 1}`;
                 cloud.classList.add(cloudType);
                 
@@ -932,7 +886,6 @@
             }
         }
 
-        // إنشاء الكواكب
         function createPlanets() {
             const planetsContainer = document.getElementById('planetsContainer');
             const planetColors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'];
@@ -959,12 +912,10 @@
             }
         }
 
-        // فتح الديسكورد
         function openDiscord() {
             window.open('https://discord.com/users/860948173827997719', '_blank');
         }
 
-        // تحديث عداد الزوار
         function updateVisitorCount() {
             let count = localStorage.getItem('kasterVisitors');
             if (!count) {
@@ -976,7 +927,6 @@
             document.getElementById('visitorCount').textContent = count;
         }
 
-        // تشغيل كل شيء عند تحميل الصفحة
         window.onload = function() {
             initTheme();
             initQRCode();
