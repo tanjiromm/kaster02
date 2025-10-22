@@ -40,110 +40,85 @@
             transition: background 0.8s ease;
         }
 
+        /* الساعة الجديدة - مرفوعة أكثر */
+        .time-widget {
+            position: absolute;
+            top: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--container-bg);
+            backdrop-filter: blur(25px);
+            border: 2px solid var(--container-border);
+            border-radius: 20px;
+            padding: 20px 25px;
+            box-shadow: 0 15px 40px var(--shadow-color), 0 0 30px rgba(114, 137, 218, 0.3);
+            z-index: 101;
+            min-width: 120px;
+            text-align: center;
+            animation: timeGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes timeGlow {
+            0%, 100% { 
+                box-shadow: 0 15px 40px var(--shadow-color), 0 0 20px rgba(114, 137, 218, 0.3);
+            }
+            50% { 
+                box-shadow: 0 15px 40px var(--shadow-color), 0 0 40px rgba(114, 137, 218, 0.6);
+            }
+        }
+
+        .time-text {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: var(--text-color);
+            text-shadow: 0 0 15px rgba(114, 137, 218, 0.9);
+            letter-spacing: 1px;
+        }
+
+        .time-emoji {
+            position: absolute;
+            top: -25px;
+            right: -12px;
+            font-size: 2em;
+            filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.7));
+            z-index: 102;
+            animation: emojiFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes emojiFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(5deg); }
+        }
+
         /* تحسينات للجوال */
         @media (max-width: 768px) {
-            .profile-container {
-                width: 95%;
-                max-width: 95%;
-                padding: 25px 20px;
-                margin: 20px auto;
+            .time-widget {
+                top: -70px;
+                padding: 18px 22px;
             }
-
-            .avatar {
-                width: 100px;
-                height: 100px;
+            .time-text {
+                font-size: 1.2em;
             }
-
-            .username {
-                font-size: 1.6em;
-            }
-
-            .discord-tag {
-                font-size: 1.1em;
-            }
-
-            .social-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 1em;
-            }
-
-            .moon, .sun {
-                width: 50px;
-                height: 50px;
-                top: 5%;
-                right: 5%;
-            }
-
-            .theme-toggle, .qr-toggle {
-                width: 45px;
-                height: 45px;
-            }
-
-            .qr-toggle {
-                top: 75px;
-            }
-
-            .visitor-counter {
-                bottom: 15px;
-                left: 15px;
-                padding: 10px 15px;
-                font-size: 0.8em;
+            .time-emoji {
+                font-size: 1.8em;
+                top: -22px;
+                right: -10px;
             }
         }
 
         @media (max-width: 480px) {
-            .profile-container {
-                padding: 20px 15px;
-                border-radius: 20px;
+            .time-widget {
+                top: -65px;
+                padding: 15px 20px;
+                min-width: 110px;
             }
-
-            .avatar {
-                width: 90px;
-                height: 90px;
+            .time-text {
+                font-size: 1.1em;
             }
-
-            .username {
-                font-size: 1.4em;
-            }
-
-            .discord-tag {
-                font-size: 1em;
-            }
-
-            .location, .age, .bio {
-                font-size: 0.9em;
-            }
-
-            .social-section {
-                gap: 8px;
-            }
-
-            .social-icon {
-                width: 38px;
-                height: 38px;
-            }
-
-            .moon, .sun {
-                width: 40px;
-                height: 40px;
-            }
-
-            .qr-content {
-                padding: 20px;
-                margin: 10px;
-            }
-
-            .qr-code {
-                width: 150px;
-                height: 150px;
-            }
-        }
-
-        /* تحسينات للأجهزة الكبيرة */
-        @media (min-width: 1200px) {
-            .profile-container {
-                max-width: 500px;
+            .time-emoji {
+                font-size: 1.6em;
+                top: -20px;
+                right: -8px;
             }
         }
 
@@ -322,6 +297,16 @@
             z-index: 2;
             opacity: 1;
             transition: opacity 0.8s ease;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .planet:hover {
+            transform: scale(1.2);
+        }
+
+        .planet.exploding {
+            animation: planetExplode 0.8s ease-out forwards;
         }
 
         [data-theme="light"] .planet {
@@ -678,6 +663,44 @@
             text-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
         }
 
+        .visitor-stats {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            background: var(--container-bg);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid var(--container-border);
+            font-size: 0.8em;
+            z-index: 100;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            max-width: 200px;
+        }
+
+        .stat-item {
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #4ecdc4;
+        }
+
+        .explosion-particles {
+            position: absolute;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: particleFloat 1.5s ease-out forwards;
+        }
+
         @keyframes twinkle {
             0%, 100% { opacity: 0; transform: scale(0.5); }
             50% { opacity: 1; transform: scale(1); }
@@ -723,9 +746,27 @@
                 opacity: 0;
             }
         }
+
+        @keyframes planetExplode {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        @keyframes particleFloat {
+            0% { 
+                transform: translate(0, 0) scale(1); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translate(var(--tx), var(--ty)) scale(0); 
+                opacity: 0; 
+            }
+        }
     </style>
 </head>
 <body data-theme="dark">
+    <!-- كل العناصر ترجع -->
     <div class="stars" id="starsContainer"></div>
     <div class="moon"></div>
     <div class="sun"></div>
@@ -762,6 +803,12 @@
     </div>
     
     <div class="profile-container">
+        <!-- الساعة الجديدة - مرفوعة وفخمة -->
+        <div class="time-widget" id="timeWidget">
+            <div class="time-emoji" id="timeEmoji">🌙</div>
+            <div class="time-text" id="timeText">00:00</div>
+        </div>
+        
         <div class="avatar-section">
             <div class="avatar" onclick="openDiscord()">
                 <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" alt="Discord" class="avatar-img">
@@ -817,9 +864,187 @@
         <span class="visitor-count" id="visitorCount">1</span> زائر
     </div>
 
-    <script src="https://cdn.counter.dev/script.js" data-id="kaster-02-profile" data-utcoffset="3"></script>
-    
+    <div class="visitor-stats" id="visitorStats">
+        <div class="stat-item">
+            <span>الزوار اليوم:</span>
+            <span class="stat-value" id="todayVisitors">0</span>
+        </div>
+        <div class="stat-item">
+            <span>الزوار الكل:</span>
+            <span class="stat-value" id="totalVisitors">0</span>
+        </div>
+        <div class="stat-item">
+            <span>آخر زيارة:</span>
+            <span class="stat-value" id="lastVisit">-</span>
+        </div>
+    </div>
+
     <script>
+        // ⚡ الأصوات الجديدة للكواكب
+        const planetSounds = [
+            'https://assets.mixkit.co/sfx/preview/mixkit-magic-sparkle-sound-3091.mp3',
+            'https://assets.mixkit.co/sfx/preview/mixkit-bubble-pop-up-alert-notification-2357.mp3',
+            'https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3',
+            'https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3',
+            'https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3',
+            'https://assets.mixkit.co/sfx/preview/mixkit-gaming-lock-2851.mp3'
+        ];
+
+        // 🔊 دالة تشغيل الصوت
+        function playSound(soundUrl, volume = 0.3) {
+            try {
+                const audio = new Audio(soundUrl);
+                audio.volume = volume;
+                audio.play().catch(e => console.log('لم يتم تشغيل الصوت:', e));
+            } catch (error) {
+                console.log('خطأ في تشغيل الصوت:', error);
+            }
+        }
+
+        // 🕒 دالة تحديث الساعة
+        function updateSaudiTime() {
+            const now = new Date();
+            // توقيت الرياض (UTC+3)
+            const saudiTime = new Date(now.getTime() + (3 * 60 * 60 * 1000));
+            
+            const hours = saudiTime.getUTCHours().toString().padStart(2, '0');
+            const minutes = saudiTime.getUTCMinutes().toString().padStart(2, '0');
+            
+            document.getElementById('timeText').textContent = `${hours}:${minutes}`;
+            
+            // تحديث الإيموجي حسب الوقت
+            updateTimeEmoji(saudiTime.getUTCHours());
+        }
+
+        // 🌅 دالة تحديث الإيموجي حسب الوقت
+        function updateTimeEmoji(hour) {
+            const emojiElement = document.getElementById('timeEmoji');
+            let emoji = '🌙';
+            
+            if (hour >= 2 && hour < 5) {
+                emoji = '🌙✨'; // الفجر
+            } else if (hour >= 5 && hour < 7) {
+                emoji = '🌅'; // الشروق
+            } else if (hour >= 7 && hour < 10) {
+                emoji = '☀️'; // الصباح
+            } else if (hour >= 10 && hour < 16) {
+                emoji = '🌤️'; // الظهر
+            } else if (hour >= 16 && hour < 19) {
+                emoji = '🌇'; // المغرب
+            } else if (hour >= 19 || hour < 2) {
+                emoji = '🌙'; // العشاء
+            }
+            
+            emojiElement.textContent = emoji;
+        }
+
+        // 💥 تفجير الكواكب مع الأصوات
+        function initPlanetsInteraction() {
+            const planets = document.querySelectorAll('.planet');
+            
+            planets.forEach((planet, index) => {
+                planet.style.cursor = 'pointer';
+                
+                planet.addEventListener('click', function(e) {
+                    if (this.classList.contains('exploding')) return;
+                    
+                    // تشغيل صوت عشوائي للكوكب
+                    const randomSound = planetSounds[index % planetSounds.length];
+                    playSound(randomSound, 0.4);
+                    
+                    // تأثير الانفجار
+                    this.classList.add('exploding');
+                    
+                    // إنشاء جزيئات الانفجار
+                    createExplosionParticles(e.clientX, e.clientY, this.style.background);
+                    
+                    // إعادة إنشاء الكوكب بعد 3 ثواني
+                    setTimeout(() => {
+                        this.classList.remove('exploding');
+                        this.style.opacity = '1';
+                        this.style.transform = 'scale(1)';
+                    }, 3000);
+                });
+            });
+        }
+
+        // ✨ إنشاء جزيئات الانفجار
+        function createExplosionParticles(x, y, color) {
+            const particlesContainer = document.createElement('div');
+            particlesContainer.className = 'explosion-particles';
+            document.body.appendChild(particlesContainer);
+            
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.background = color;
+                particle.style.width = (Math.random() * 10 + 5) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                
+                // اتجاهات عشوائية للجزيئات
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 100 + 50;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--tx', tx + 'px');
+                particle.style.setProperty('--ty', ty + 'px');
+                
+                particlesContainer.appendChild(particle);
+                
+                // إزالة الجزيء بعد الانتهاء
+                setTimeout(() => {
+                    particle.remove();
+                }, 1500);
+            }
+            
+            // إزالة الحاوية بعد الانتهاء
+            setTimeout(() => {
+                particlesContainer.remove();
+            }, 1500);
+        }
+
+        // 🌐 نظام عد الزوار الحقيقي
+        async function updateRealVisitorCount() {
+            try {
+                let stats = JSON.parse(localStorage.getItem('kasterVisitorStats')) || { 
+                    total: 0, 
+                    today: 0, 
+                    lastVisit: null,
+                    todayDate: new Date().toDateString()
+                };
+                
+                const today = new Date().toDateString();
+                
+                if (stats.todayDate !== today) {
+                    stats.today = 0;
+                    stats.todayDate = today;
+                }
+                
+                const lastVisitDate = stats.lastVisit ? new Date(stats.lastVisit).toDateString() : null;
+                if (lastVisitDate !== today) {
+                    stats.today += 1;
+                }
+                
+                stats.total += 1;
+                stats.lastVisit = new Date().toISOString();
+                localStorage.setItem('kasterVisitorStats', JSON.stringify(stats));
+                
+                document.getElementById('todayVisitors').textContent = stats.today;
+                document.getElementById('totalVisitors').textContent = stats.total;
+                document.getElementById('lastVisit').textContent = new Date(stats.lastVisit).toLocaleTimeString('ar-SA');
+                document.getElementById('visitorCount').textContent = stats.total;
+                
+            } catch (error) {
+                console.log('خطأ في نظام الزوار:', error);
+            }
+        }
+
+        // الدوال الأصلية
         function initTheme() {
             const themeToggle = document.getElementById('themeToggle');
             const themeIcon = themeToggle.querySelector('i');
@@ -837,6 +1062,24 @@
                 themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
                 playToggleSound();
             });
+        }
+
+        function playToggleSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.3);
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.3);
         }
 
         function createStarRain(event) {
@@ -860,24 +1103,6 @@
             setTimeout(() => {
                 starRain.style.opacity = '0';
             }, 1000);
-        }
-
-        function playToggleSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.3);
-            
-            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-            
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.3);
         }
 
         function initQRCode() {
@@ -1024,26 +1249,20 @@
             window.open('https://discord.com/users/860948173827997719', '_blank');
         }
 
-        function updateVisitorCount() {
-            let count = localStorage.getItem('kasterVisitors');
-            if (!count) {
-                count = 1;
-            } else {
-                count = parseInt(count) + 1;
-            }
-            localStorage.setItem('kasterVisitors', count);
-            document.getElementById('visitorCount').textContent = count;
-        }
-
         window.onload = function() {
-            initTheme();
+            iniTheme();
             initQRCode();
-            createStars();
+            createStares();
             createMeteors();
             createClouds();
-            createPlanets();
+            createPlantes();
             updateAge();
-            updateVisitorCount();
+            updateRealvisitorCount();
+            initplanetsInteraction();
+            
+            // تحديث الساعة الآن وكل دقيقة
+            updateSaudiTime();
+            SetInterval(updateSaudiTime, 60000);
         };
     </script>
 </body>
