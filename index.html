@@ -50,8 +50,8 @@
             }
 
             .avatar {
-                width: 100px;
-                height: 100px;
+                width: 120px;
+                height: 120px;
             }
 
             .username {
@@ -75,13 +75,9 @@
                 right: 5%;
             }
 
-            .theme-toggle, .qr-toggle {
+            .theme-toggle {
                 width: 45px;
                 height: 45px;
-            }
-
-            .qr-toggle {
-                top: 75px;
             }
         }
 
@@ -92,8 +88,8 @@
             }
 
             .avatar {
-                width: 90px;
-                height: 90px;
+                width: 100px;
+                height: 100px;
             }
 
             .username {
@@ -120,16 +116,6 @@
             .moon, .sun {
                 width: 40px;
                 height: 40px;
-            }
-
-            .qr-content {
-                padding: 20px;
-                margin: 10px;
-            }
-
-            .qr-code {
-                width: 150px;
-                height: 150px;
             }
         }
 
@@ -360,26 +346,27 @@
         }
 
         .avatar {
-            width: 130px;
-            height: 130px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
-            border: 3px solid var(--primary-color);
+            border: 4px solid var(--primary-color);
             box-shadow: 0 0 35px rgba(114, 137, 218, 0.6);
             margin: 0 auto 20px auto;
             cursor: pointer;
             transition: all 0.3s ease;
-            background: var(--primary-color);
+            background: #1a1a2e;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            object-fit: cover;
         }
 
         .avatar-img {
-            width: 70%;
-            height: 70%;
-            object-fit: contain;
-            border-radius: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
         .avatar:hover {
@@ -552,107 +539,6 @@
             transition: all 0.3s ease;
         }
 
-        .qr-toggle {
-            position: fixed;
-            top: 85px;
-            right: 20px;
-            z-index: 1000;
-            background: var(--container-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--container-border);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px var(--shadow-color);
-        }
-
-        .qr-toggle:hover {
-            transform: scale(1.1);
-        }
-
-        .qr-toggle i {
-            font-size: 1.2em;
-            color: var(--text-color);
-        }
-
-        .qr-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .qr-modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .qr-content {
-            background: var(--container-bg);
-            backdrop-filter: blur(20px);
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            border: 1px solid var(--container-border);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            max-width: 90%;
-        }
-
-        .qr-code {
-            width: 200px;
-            height: 200px;
-            background: white;
-            margin: 15px auto;
-            border-radius: 10px;
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            color: #333;
-            text-align: center;
-            word-break: break-all;
-        }
-
-        .url-display {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 8px;
-            margin: 10px 0;
-            font-size: 12px;
-            word-break: break-all;
-        }
-
-        .copy-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .copy-btn:hover {
-            background: #5a6fcf;
-            transform: scale(1.05);
-        }
-
         .explosion-particles {
             position: absolute;
             pointer-events: none;
@@ -738,32 +624,10 @@
         <i class="fas fa-moon"></i>
     </div>
     
-    <div class="qr-toggle" id="qrToggle">
-        <i class="fas fa-qrcode"></i>
-    </div>
-    
-    <div class="qr-modal" id="qrModal">
-        <div class="qr-content">
-            <h3>📱 مشاركة الموقع</h3>
-            <div class="qr-code">
-                <div>
-                    <div style="font-size: 16px; margin-bottom: 10px;">🔗 Kaster_02</div>
-                    <div style="font-size: 12px; color: #666;">مسح الكود</div>
-                </div>
-            </div>
-            <div class="url-display" id="currentUrl"></div>
-            <div>
-                <button class="copy-btn" onclick="copyUrl()">نسخ الرابط</button>
-                <button class="copy-btn" onclick="shareUrl()">مشاركة</button>
-                <button class="copy-btn" onclick="closeQR()">إغلاق</button>
-            </div>
-        </div>
-    </div>
-    
     <div class="profile-container">
         <div class="avatar-section">
             <div class="avatar" onclick="openDiscord()">
-                <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" alt="Discord" class="avatar-img">
+                <img src="Tanjiro.jpg" alt="Tanjiro" class="avatar-img">
             </div>
         </div>
         
@@ -983,38 +847,6 @@
             }, 1000);
         }
 
-        function initQRCode() {
-            const qrToggle = document.getElementById('qrToggle');
-            const qrModal = document.getElementById('qrModal');
-            
-            qrToggle.addEventListener('click', () => {
-                qrModal.classList.add('active');
-                document.getElementById('currentUrl').textContent = window.location.href;
-            });
-        }
-
-        function closeQR() {
-            document.getElementById('qrModal').classList.remove('active');
-        }
-
-        function copyUrl() {
-            const url = window.location.href;
-            navigator.clipboard.writeText(url).then(() => {
-                alert('تم نسخ الرابط!');
-            });
-        }
-
-        function shareUrl() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Kaster_02 - النجم',
-                    url: window.location.href
-                });
-            } else {
-                copyUrl();
-            }
-        }
-
         function calculateAge() {
             const birthDate = new Date(2005, 2, 26);
             const today = new Date();
@@ -1129,7 +961,6 @@
 
         window.onload = function() {
             initTheme();
-            initQRCode();
             createStars();
             createMeteors();
             createClouds();
