@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kaster_02 - النجم</title>
+    <title>Kaster_02 - عالم الطعام</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -15,20 +15,13 @@
         }
 
         :root {
-            --primary-color: #7289da;
-            --bg-color: #0a0e29;
-            --text-color: white;
-            --container-bg: rgba(255, 255, 255, 0.1);
-            --container-border: rgba(255, 255, 255, 0.2);
-            --shadow-color: rgba(0, 0, 0, 0.4);
-        }
-
-        [data-theme="light"] {
-            --bg-color: #87CEEB;
-            --text-color: #2c3e50;
+            --primary-color: #FF6B6B;
+            --bg-color: linear-gradient(to bottom, #FFF5E1, #FFE8C8);
+            --text-color: #5D4037;
             --container-bg: rgba(255, 255, 255, 0.9);
-            --container-border: rgba(255, 255, 255, 0.3);
-            --shadow-color: rgba(0, 0, 0, 0.1);
+            --container-border: rgba(255, 182, 193, 0.3);
+            --shadow-color: rgba(251, 192, 147, 0.4);
+            --time-color: #FF5722;
         }
 
         body {
@@ -37,7 +30,76 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
-            transition: background 0.8s ease;
+            transition: all 0.8s ease;
+        }
+
+        /* مؤشر الثيم */
+        .theme-indicator {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: var(--container-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--container-border);
+            border-radius: 25px;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* عناصر الطعام العائمة */
+        .food-item {
+            position: absolute;
+            font-size: 2em;
+            z-index: 1;
+            animation: floatFood 15s infinite ease-in-out;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+        }
+
+        .food-item:hover {
+            transform: scale(1.2) rotate(15deg);
+        }
+
+        @keyframes floatFood {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(5deg); }
+            50% { transform: translateY(0) rotate(0deg); }
+            75% { transform: translateY(20px) rotate(-5deg); }
+        }
+
+        /* بخار الطبخ */
+        .steam {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: steamRise 4s infinite ease-out;
+            z-index: 2;
+        }
+
+        @keyframes steamRise {
+            0% { 
+                transform: translateY(0) scale(0.5);
+                opacity: 0;
+            }
+            50% { 
+                opacity: 0.8;
+            }
+            100% { 
+                transform: translateY(-100px) scale(1.5);
+                opacity: 0;
+            }
         }
 
         /* تحسينات للجوال */
@@ -68,13 +130,6 @@
                 font-size: 1em;
             }
 
-            .moon, .sun {
-                width: 50px;
-                height: 50px;
-                top: 5%;
-                right: 5%;
-            }
-
             .theme-toggle {
                 width: 45px;
                 height: 45px;
@@ -92,6 +147,17 @@
 
             .time-icon {
                 font-size: 0.8em;
+            }
+
+            .theme-indicator {
+                top: 80px;
+                left: 20px;
+                font-size: 0.8em;
+                padding: 6px 12px;
+            }
+
+            .food-item {
+                font-size: 1.5em;
             }
         }
 
@@ -128,11 +194,6 @@
                 height: 38px;
             }
 
-            .moon, .sun {
-                width: 40px;
-                height: 40px;
-            }
-
             .time-container {
                 width: 110px;
                 height: 32px;
@@ -146,22 +207,15 @@
             .time-icon {
                 font-size: 0.7em;
             }
-        }
 
-        /* تحسينات للأجهزة الكبيرة */
-        @media (min-width: 1200px) {
-            .profile-container {
-                max-width: 500px;
+            .theme-indicator {
+                top: 70px;
+                left: 15px;
+                font-size: 0.75em;
             }
 
-            .time-container {
-                width: 130px;
-                height: 38px;
-                top: -19px;
-            }
-
-            .time-display {
-                font-size: 1.6em !important;
+            .food-item {
+                font-size: 1.2em;
             }
         }
 
@@ -188,17 +242,6 @@
             padding: 0 10px;
         }
 
-        .time-container::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: var(--container-border);
-            z-index: 1;
-        }
-
         .time-container:hover {
             transform: translateX(-50%) translateY(-3px);
             box-shadow: 0 12px 25px var(--shadow-color);
@@ -213,207 +256,50 @@
         .time-display {
             font-size: 1.8em !important;
             font-weight: 800;
-            color: white;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            color: var(--time-color);
+            text-shadow: 0 0 10px rgba(255, 87, 34, 0.3);
             letter-spacing: 2px;
             font-family: 'Courier New', monospace;
             line-height: 1;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        /* النجوم - تظهر فقط في Dark Mode */
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
+        /* فقاعات الطهي */
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            animation: bubbleFloat 8s infinite ease-in-out;
             z-index: 1;
-            opacity: 1;
-            transition: opacity 0.8s ease;
         }
 
-        [data-theme="light"] .stars {
-            opacity: 0;
+        @keyframes bubbleFloat {
+            0% { 
+                transform: translateY(0) scale(0.3);
+                opacity: 0;
+            }
+            50% { 
+                opacity: 0.7;
+            }
+            100% { 
+                transform: translateY(-100px) scale(1);
+                opacity: 0;
+            }
         }
 
-        .star {
-            position: absolute;
-            background-color: white;
-            border-radius: 50%;
-            animation: twinkle 3s infinite;
-        }
-
-        .moon {
-            position: absolute;
-            top: 10%;
-            right: 10%;
-            width: 80px;
-            height: 80px;
-            background: #f5f5f5;
-            border-radius: 50%;
-            box-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
-            z-index: 2;
-            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        [data-theme="light"] .moon {
-            transform: translateY(150vh);
-            opacity: 0;
-        }
-
-        .moon::after {
-            content: '';
-            position: absolute;
-            top: 20px;
-            left: 15px;
-            width: 20px;
-            height: 20px;
-            background: #e0e0e0;
-            border-radius: 50%;
-        }
-
-        .sun {
-            position: absolute;
-            top: 10%;
-            right: 10%;
-            width: 80px;
-            height: 80px;
-            background: #FFD700;
-            border-radius: 50%;
-            box-shadow: 0 0 60px #FFA500;
-            z-index: 2;
-            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateY(150vh);
-            opacity: 0;
-        }
-
-        [data-theme="light"] .sun {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .meteor {
-            position: absolute;
-            background: linear-gradient(90deg, white, transparent);
-            height: 2px;
-            animation: meteorFall 2s linear infinite;
-            z-index: 2;
-            opacity: 1;
-            transition: opacity 0.8s ease;
-        }
-
-        [data-theme="light"] .meteor {
-            opacity: 0;
-        }
-
-        .cloud {
-            position: absolute;
-            z-index: 2;
-            opacity: 0;
-            transition: opacity 0.8s ease;
-        }
-
-        [data-theme="light"] .cloud {
-            opacity: 1;
-        }
-
-        .cloud::before {
-            content: '';
-            position: absolute;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 50%;
-            box-shadow: 
-                0 0 30px rgba(255, 255, 255, 0.8),
-                inset 0 0 20px rgba(255, 255, 255, 0.9);
-        }
-
-        .cloud-1::before {
-            width: 120px;
-            height: 60px;
-            top: 0;
-            left: 0;
-            filter: blur(8px);
-        }
-
-        .cloud-1::after {
-            content: '';
-            position: absolute;
-            background: rgba(255, 255, 255, 0.85);
-            width: 80px;
-            height: 50px;
-            border-radius: 50%;
-            top: -20px;
-            left: 20px;
-            filter: blur(6px);
-        }
-
-        .cloud-2::before {
-            width: 180px;
-            height: 70px;
-            top: 0;
-            left: 0;
-            filter: blur(10px);
-        }
-
-        .cloud-2::after {
-            content: '';
-            position: absolute;
-            background: rgba(255, 255, 255, 0.8);
-            width: 100px;
-            height: 60px;
-            border-radius: 50%;
-            top: -25px;
-            left: 40px;
-            filter: blur(8px);
-        }
-
-        .cloud-3::before {
-            width: 150px;
-            height: 65px;
-            top: 0;
-            left: 0;
-            filter: blur(9px);
-        }
-
-        .cloud-3::after {
-            content: '';
-            position: absolute;
-            background: rgba(255, 255, 255, 0.9);
-            width: 90px;
-            height: 55px;
-            border-radius: 50%;
-            top: -22px;
-            left: 30px;
-            filter: blur(7px);
-        }
-
-        .planet {
-            position: absolute;
-            border-radius: 50%;
-            animation: planetGlow 4s ease-in-out infinite;
-            z-index: 2;
-            opacity: 1;
-            transition: opacity 0.8s ease;
+        /* كعكة عيد الميلاد */
+        .cake {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 3em;
+            z-index: 5;
+            animation: cakeGlow 3s infinite alternate;
             cursor: pointer;
-            transition: transform 0.3s ease;
         }
 
-        .planet:hover {
-            transform: scale(1.2);
-        }
-
-        .planet.exploding {
-            animation: planetExplode 0.8s ease-out forwards;
-        }
-
-        [data-theme="light"] .planet {
-            opacity: 0;
+        @keyframes cakeGlow {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
         }
 
         .profile-container {
@@ -428,16 +314,28 @@
             backdrop-filter: blur(20px);
             border-radius: 25px;
             padding: 35px;
-            border: 1px solid var(--container-border);
+            border: 2px solid var(--container-border);
             box-shadow: 0 25px 50px var(--shadow-color);
             text-align: center;
             animation: containerGlow 3s ease-in-out infinite;
             transition: all 0.8s ease;
+            overflow: hidden;
+        }
+
+        .profile-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #FF6B6B, #FFD166, #06D6A0, #118AB2);
+            z-index: 1;
         }
 
         @keyframes containerGlow {
-            0%, 100% { box-shadow: 0 25px 50px var(--shadow-color), 0 0 0px rgba(114, 137, 218, 0.5); }
-            50% { box-shadow: 0 25px 50px var(--shadow-color), 0 0 30px rgba(114, 137, 218, 0.8); }
+            0%, 100% { box-shadow: 0 25px 50px var(--shadow-color); }
+            50% { box-shadow: 0 25px 50px rgba(255, 107, 107, 0.6); }
         }
 
         .avatar-section {
@@ -449,16 +347,26 @@
             height: 150px;
             border-radius: 50%;
             border: 4px solid var(--primary-color);
-            box-shadow: 0 0 35px rgba(114, 137, 218, 0.6);
+            box-shadow: 0 0 35px rgba(255, 107, 107, 0.6);
             margin: 0 auto 20px auto;
             cursor: pointer;
             transition: all 0.3s ease;
-            background: #1a1a2e;
+            background: #FFE8C8;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             object-fit: cover;
+            position: relative;
+        }
+
+        .avatar::after {
+            content: '🍽️';
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            font-size: 2em;
+            z-index: 2;
         }
 
         .avatar-img {
@@ -470,7 +378,7 @@
 
         .avatar:hover {
             transform: scale(1.08);
-            box-shadow: 0 0 45px rgba(114, 137, 218, 0.8);
+            box-shadow: 0 0 45px var(--primary-color);
         }
 
         .info-section {
@@ -482,14 +390,14 @@
             font-weight: bold;
             margin-bottom: 5px;
             color: var(--text-color);
-            text-shadow: 0 0 15px rgba(114, 137, 218, 0.9);
+            text-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
             cursor: pointer;
             transition: all 0.3s ease;
             display: inline-block;
         }
 
         .username:hover {
-            text-shadow: 0 0 25px rgba(114, 137, 218, 1);
+            text-shadow: 0 0 25px rgba(255, 107, 107, 0.5);
             transform: scale(1.05);
         }
 
@@ -503,8 +411,8 @@
         }
 
         .discord-tag:hover {
-            color: #8ba0ff;
-            text-shadow: 0 0 15px rgba(114, 137, 218, 0.7);
+            color: #FF8E8E;
+            text-shadow: 0 0 15px rgba(255, 107, 107, 0.7);
             transform: scale(1.05);
         }
 
@@ -535,6 +443,7 @@
         .bio-main {
             font-weight: bold;
             margin-bottom: 5px;
+            color: #FF5722;
         }
 
         .social-section {
@@ -549,39 +458,36 @@
             width: 45px;
             height: 45px;
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 107, 107, 0.3);
             font-size: 1.2em;
             color: var(--text-color);
             text-decoration: none;
             position: relative;
         }
 
-        .social-icon::after {
-            display: none !important;
-        }
-
         .social-icon:hover {
             transform: scale(1.15) translateY(-5px);
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 107, 107, 0.2);
+            box-shadow: 0 10px 25px var(--shadow-color);
         }
 
-        .youtube { background: rgba(255, 0, 0, 0.3) !important; }
-        .instagram { background: rgba(225, 48, 108, 0.3) !important; }
-        .snapchat { background: rgba(255, 252, 0, 0.3) !important; }
-        .twitter { background: rgba(29, 161, 242, 0.3) !important; }
-        .tiktok { background: rgba(0, 0, 0, 0.3) !important; }
-        .discord { background: rgba(114, 137, 218, 0.3) !important; }
-        .spotify { background: rgba(30, 215, 96, 0.3) !important; }
-        .email { background: rgba(66, 133, 244, 0.3) !important; }
-        .fortnite-gg { background: rgba(255, 165, 0, 0.3) !important; }
-        .fortnite { background: rgba(148, 51, 255, 0.3) !important; }
+        /* ألوان الأيقونات حسب نوع الطعام */
+        .youtube { background: rgba(255, 0, 0, 0.2) !important; border-color: rgba(255, 0, 0, 0.3) !important; }
+        .instagram { background: rgba(225, 48, 108, 0.2) !important; border-color: rgba(225, 48, 108, 0.3) !important; }
+        .snapchat { background: rgba(255, 252, 0, 0.2) !important; border-color: rgba(255, 252, 0, 0.3) !important; }
+        .twitter { background: rgba(29, 161, 242, 0.2) !important; border-color: rgba(29, 161, 242, 0.3) !important; }
+        .tiktok { background: rgba(0, 0, 0, 0.2) !important; border-color: rgba(0, 0, 0, 0.3) !important; }
+        .discord { background: rgba(114, 137, 218, 0.2) !important; border-color: rgba(114, 137, 218, 0.3) !important; }
+        .spotify { background: rgba(30, 215, 96, 0.2) !important; border-color: rgba(30, 215, 96, 0.3) !important; }
+        .email { background: rgba(66, 133, 244, 0.2) !important; border-color: rgba(66, 133, 244, 0.3) !important; }
+        .fortnite-gg { background: rgba(255, 165, 0, 0.2) !important; border-color: rgba(255, 165, 0, 0.3) !important; }
+        .fortnite { background: rgba(148, 51, 255, 0.2) !important; border-color: rgba(148, 51, 255, 0.3) !important; }
 
         .fortnite img {
             width: 50% !important;
@@ -602,11 +508,22 @@
 
         .falling-star {
             position: absolute;
-            background: linear-gradient(45deg, transparent, white, transparent);
+            background: linear-gradient(45deg, transparent, #FF6B6B, transparent);
             width: 3px;
             height: 20px;
             border-radius: 50%;
             animation: starFall 1s linear forwards;
+        }
+
+        @keyframes starFall {
+            0% { 
+                transform: translateY(-100px) rotate(45deg);
+                opacity: 1;
+            }
+            100% { 
+                transform: translateY(100vh) rotate(45deg);
+                opacity: 0;
+            }
         }
 
         .theme-toggle {
@@ -638,89 +555,71 @@
             transition: all 0.3s ease;
         }
 
-        .explosion-particles {
+        /* تأثير القلي */
+        .sizzle {
             position: absolute;
-            pointer-events: none;
+            width: 10px;
+            height: 10px;
+            background: #FFD700;
+            border-radius: 50%;
+            animation: sizzlePop 0.5s ease-out forwards;
             z-index: 3;
         }
 
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            animation: particleFloat 1.5s ease-out forwards;
+        @keyframes sizzlePop {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
         }
 
-        @keyframes twinkle {
-            0%, 100% { opacity: 0; transform: scale(0.5); }
-            50% { opacity: 1; transform: scale(1); }
+        /* طاهي صغير */
+        .chef {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            font-size: 3em;
+            z-index: 5;
+            animation: chefWave 5s infinite;
+            cursor: pointer;
         }
 
-        @keyframes meteorFall {
-            0% { 
-                transform: translateX(-100px) translateY(-100px) rotate(45deg);
-                opacity: 1;
-                width: 0;
-            }
-            100% { 
-                transform: translateX(500px) translateY(500px) rotate(45deg);
-                opacity: 0;
-                width: 150px;
-            }
+        @keyframes chefWave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(10deg); }
+            75% { transform: rotate(-10deg); }
         }
 
-        @keyframes cloudMove {
-            0% { transform: translateX(-200px); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateX(1500px); opacity: 0; }
-        }
-
-        @keyframes planetGlow {
-            0%, 100% { transform: scale(1); opacity: 0.7; }
-            50% { transform: scale(1.1); opacity: 1; }
-        }
-
-        @keyframes starFall {
-            0% { 
-                transform: translateY(-100px) rotate(45deg);
-                opacity: 1;
-            }
-            100% { 
-                transform: translateY(100vh) rotate(45deg);
-                opacity: 0;
-            }
-        }
-
-        @keyframes planetExplode {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 0.7; }
-            100% { transform: scale(0); opacity: 0; }
-        }
-
-        @keyframes particleFloat {
-            0% { 
-                transform: translate(0, 0) scale(1); 
-                opacity: 1; 
-            }
-            100% { 
-                transform: translate(var(--tx), var(--ty)) scale(0); 
-                opacity: 0; 
-            }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
     </style>
 </head>
-<body data-theme="dark">
-    <div class="stars" id="starsContainer"></div>
-    <div class="moon"></div>
-    <div class="sun"></div>
-    <div id="meteorsContainer"></div>
-    <div id="cloudsContainer"></div>
-    <div id="planetsContainer"></div>
+<body>
+    <!-- مؤشر الثيم -->
+    <div class="theme-indicator" id="themeIndicator">
+        <span id="themeIcon">🍕</span>
+        <span id="themeName">عالم الطعام</span>
+    </div>
+    
+    <!-- عناصر الطعام العائمة -->
+    <div id="foodContainer"></div>
+    
+    <!-- بخار الطبخ -->
+    <div id="steamContainer"></div>
+    
+    <!-- فقاعات الطبخ -->
+    <div id="bubblesContainer"></div>
+    
+    <!-- طاهي -->
+    <div class="chef" id="chef">👨‍🍳</div>
+    
+    <!-- كعكة -->
+    <div class="cake" id="cake">🎂</div>
     
     <div class="star-rain" id="starRain"></div>
     
     <div class="theme-toggle" id="themeToggle">
-        <i class="fas fa-moon"></i>
+        <i class="fas fa-utensils"></i>
     </div>
     
     <div class="profile-container">
@@ -742,76 +641,72 @@
             <div class="location">🇸🇦 السعودية 📍</div>
             <div class="age">العمر: 20 سنة</div>
             <div class="bio">
-                <div class="bio-main">مطور و مصمم مواقع ✨</div>
+                <div class="bio-main">مطور و مصمم مواقع ✨ | 🍕 عاشق للطعام</div>
             </div>
         </div>
         
         <div class="social-section">
-            <a href="https://www.youtube.com/@kaster_02I" target="_blank" class="social-icon youtube" onclick="createStarRain(event)">
+            <a href="https://www.youtube.com/@kaster_02I" target="_blank" class="social-icon youtube" onclick="createFoodRain(event)">
                 <i class="fab fa-youtube"></i>
             </a>
-            <a href="https://www.instagram.com/kaster_02/" target="_blank" class="social-icon instagram" onclick="createStarRain(event)">
+            <a href="https://www.instagram.com/kaster_02/" target="_blank" class="social-icon instagram" onclick="createFoodRain(event)">
                 <i class="fab fa-instagram"></i>
             </a>
-            <a href="https://www.snapchat.com/@kaster_02" target="_blank" class="social-icon snapchat" onclick="createStarRain(event)">
+            <a href="https://www.snapchat.com/@kaster_02" target="_blank" class="social-icon snapchat" onclick="createFoodRain(event)">
                 <i class="fab fa-snapchat"></i>
             </a>
-            <a href="https://x.com/kaster_02" target="_blank" class="social-icon twitter" onclick="createStarRain(event)">
+            <a href="https://x.com/kaster_02" target="_blank" class="social-icon twitter" onclick="createFoodRain(event)">
                 <i class="fab fa-twitter"></i>
             </a>
-            <a href="https://www.tiktok.com/@kaster_02" target="_blank" class="social-icon tiktok" onclick="createStarRain(event)">
+            <a href="https://www.tiktok.com/@kaster_02" target="_blank" class="social-icon tiktok" onclick="createFoodRain(event)">
                 <i class="fab fa-tiktok"></i>
             </a>
-            <a href="https://open.spotify.com/playlist/53SjuiCGYO52gdRffERzSq" target="_blank" class="social-icon spotify" onclick="createStarRain(event)">
+            <a href="https://open.spotify.com/playlist/53SjuiCGYO52gdRffERzSq" target="_blank" class="social-icon spotify" onclick="createFoodRain(event)">
                 <i class="fab fa-spotify"></i>
             </a>
-            <a href="mailto:gogjdu887@gmail.com" class="social-icon email" onclick="createStarRain(event)">
+            <a href="mailto:gogjdu887@gmail.com" class="social-icon email" onclick="createFoodRain(event)">
                 <i class="fas fa-envelope"></i>
             </a>
-            <a href="#" onclick="openDiscord(); createStarRain(event)" class="social-icon discord">
+            <a href="#" onclick="openDiscord(); createFoodRain(event)" class="social-icon discord">
                 <i class="fab fa-discord"></i>
             </a>
-            <a href="https://fortnite.gg/creator?name=tnv" target="_blank" class="social-icon fortnite-gg" onclick="createStarRain(event)">
+            <a href="https://fortnite.gg/creator?name=tnv" target="_blank" class="social-icon fortnite-gg" onclick="createFoodRain(event)">
                 <i class="fas fa-smile"></i>
             </a>
-            <a href="https://www.fortnite.com/@tnv?lang=ar" target="_blank" class="social-icon fortnite" onclick="createStarRain(event)">
+            <a href="https://www.fortnite.com/@tnv?lang=ar" target="_blank" class="social-icon fortnite" onclick="createFoodRain(event)">
                 <img src="https://static-assets-prod.epicgames.com/fortnite/static/favicon.ico" alt="Fortnite">
             </a>
         </div>
     </div>
 
     <script>
-        // ⚡ الأصوات الجديدة
-        const soundEffects = {
-            planet: [
-                'https://assets.mixkit.co/sfx/preview/mixkit-bubble-pop-up-alert-notification-2357.mp3',
-                'https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3',
-                'https://assets.mixkit.co/sfx/preview/mixkit-arcade-retro-game-over-213.mp3',
-                'https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3'
-            ],
-            click: 'https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3',
-            toggle: 'https://assets.mixkit.co/sfx/preview/mixkit-light-switch-click-1161.mp3'
+        // ⚡ الأصوات الجديدة للطعام
+        const foodSounds = {
+            sizzle: 'https://assets.mixkit.co/sfx/preview/mixkit-cooking-oil-sizzle-887.mp3',
+            chop: 'https://assets.mixkit.co/sfx/preview/mixkit-knife-cutting-vegetables-2450.mp3',
+            pour: 'https://assets.mixkit.co/sfx/preview/mixkit-pouring-water-into-a-glass-433.mp3',
+            bite: 'https://assets.mixkit.co/sfx/preview/mixkit-biting-into-a-crisp-apple-1999.mp3',
+            microwave: 'https://assets.mixkit.co/sfx/preview/mixkit-microwave-oven-beep-1094.mp3',
+            toast: 'https://assets.mixkit.co/sfx/preview/mixkit-toaster-ding-1030.mp3'
         };
 
-        // ⏰ دالة تحديث الساعة
-        function updateTime() {
-            const now = new Date();
-            
-            // توقيت الرياض (توقيت السعودية)
-            const options = { 
-                timeZone: 'Asia/Riyadh',
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit'
-            };
-            
-            const timeString = now.toLocaleTimeString('en-US', options);
-            
-            document.getElementById('currentTime').textContent = timeString;
-            
-            // تحديث كل دقيقة (60000 ميلي ثانية)
-            setTimeout(updateTime, 60000);
-        }
+        // 🍽️ أنواع الطعام المختلفة
+        const foodItems = [
+            '🍕', '🍔', '🌭', '🍟', '🌮', '🌯', '🥗', '🍣', '🍜', '🍛',
+            '🍚', '🍙', '🍘', '🍥', '🥟', '🍤', '🍦', '🍧', '🍨', '🎂',
+            '🍮', '🍩', '🍪', '🧁', '🍫', '🍬', '🍭', '🍿', '🥨', '🥐',
+            '🥯', '🍞', '🥖', '🧀', '🥚', '🍳', '🧈', '🥞', '🧇', '🥓',
+            '🥩', '🍗', '🍖', '🦴', '🌭', '🍔', '🍟', '🍕', '🥪', '🥙'
+        ];
+
+        // 🍳 أنواع الطبخ
+        const cookingStyles = [
+            { name: "إيطالي", icon: "🍕", color: "#FF6B6B" },
+            { name: "ياباني", icon: "🍣", color: "#FF8E8E" },
+            { name: "مكسيكي", icon: "🌮", color: "#FFB347" },
+            { name: "حلويات", icon: "🎂", color: "#FFD166" },
+            { name: "وجبات سريعة", icon: "🍔", color: "#06D6A0" }
+        ];
 
         // 🔊 دالة تشغيل الصوت
         function playSound(soundUrl, volume = 0.3) {
@@ -824,132 +719,109 @@
             }
         }
 
-        // 💥 تفجير الكواكب
-        function initPlanetsInteraction() {
-            const planets = document.querySelectorAll('.planet');
+        // 🍕 إنشاء طعام عائم
+        function createFloatingFood() {
+            const container = document.getElementById('foodContainer');
             
-            planets.forEach(planet => {
-                planet.style.cursor = 'pointer';
+            for (let i = 0; i < 20; i++) {
+                const food = document.createElement('div');
+                food.className = 'food-item';
+                food.textContent = foodItems[Math.floor(Math.random() * foodItems.length)];
                 
-                planet.addEventListener('click', function(e) {
-                    // منع النقر المتعدد
-                    if (this.classList.contains('exploding')) return;
-                    
-                    // تشغيل صوت عشوائي
-                    const randomSound = soundEffects.planet[Math.floor(Math.random() * soundEffects.planet.length)];
-                    playSound(randomSound, 0.4);
-                    
-                    // تأثير الانفجار
-                    this.classList.add('exploding');
-                    
-                    // إنشاء جزيئات الانفجار
-                    createExplosionParticles(e.clientX, e.clientY, this.style.background);
-                    
-                    // إعادة إنشاء الكوكب بعد 3 ثواني
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const delay = Math.random() * 20;
+                const duration = 15 + Math.random() * 10;
+                
+                food.style.left = left + '%';
+                food.style.top = top + '%';
+                food.style.animationDelay = delay + 's';
+                food.style.animationDuration = duration + 's';
+                food.style.fontSize = (1 + Math.random() * 1.5) + 'em';
+                
+                food.addEventListener('click', function() {
+                    playSound(foodSounds.bite, 0.2);
+                    createSizzleEffect(left, top);
+                    this.style.transform = 'scale(0) rotate(360deg)';
                     setTimeout(() => {
-                        this.classList.remove('exploding');
-                        this.style.opacity = '1';
-                        this.style.transform = 'scale(1)';
-                    }, 3000);
+                        this.remove();
+                        setTimeout(createFloatingFood, 1000);
+                    }, 300);
                 });
-            });
+                
+                container.appendChild(food);
+            }
         }
 
-        // ✨ إنشاء جزيئات الانفجار
-        function createExplosionParticles(x, y, color) {
-            const particlesContainer = document.createElement('div');
-            particlesContainer.className = 'explosion-particles';
-            document.body.appendChild(particlesContainer);
+        // 🔥 تأثير القلي
+        function createSizzleEffect(x, y) {
+            const sizzle = document.createElement('div');
+            sizzle.className = 'sizzle';
+            sizzle.style.left = x + '%';
+            sizzle.style.top = y + '%';
+            document.body.appendChild(sizzle);
             
-            const particleCount = 20;
+            playSound(foodSounds.sizzle, 0.2);
             
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.background = color;
-                particle.style.width = (Math.random() * 10 + 5) + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.left = x + 'px';
-                particle.style.top = y + 'px';
-                
-                // اتجاهات عشوائية للجزيئات
-                const angle = Math.random() * Math.PI * 2;
-                const distance = Math.random() * 100 + 50;
-                const tx = Math.cos(angle) * distance;
-                const ty = Math.sin(angle) * distance;
-                
-                particle.style.setProperty('--tx', tx + 'px');
-                particle.style.setProperty('--ty', ty + 'px');
-                
-                particlesContainer.appendChild(particle);
-                
-                // إزالة الجزيء بعد الانتهاء
-                setTimeout(() => {
-                    particle.remove();
-                }, 1500);
-            }
-            
-            // إزالة الحاوية بعد الانتهاء
             setTimeout(() => {
-                particlesContainer.remove();
-            }, 1500);
+                sizzle.remove();
+            }, 500);
         }
 
-        // 🔊 إضافة أصوات للنقر على الروابط
-        function addClickSounds() {
-            const clickableElements = document.querySelectorAll('a, button, .avatar, .username, .discord-tag, .time-container');
+        // ☁️ إنشاء بخار الطبخ
+        function createSteam() {
+            const container = document.getElementById('steamContainer');
             
-            clickableElements.forEach(element => {
-                element.addEventListener('click', () => {
-                    playSound(soundEffects.click, 0.2);
-                });
-            });
-            
-            // صوت خاص لتبديل الثيم
-            document.getElementById('themeToggle').addEventListener('click', () => {
-                playSound(soundEffects.toggle, 0.3);
-            });
+            setInterval(() => {
+                const steam = document.createElement('div');
+                steam.className = 'steam';
+                
+                const left = Math.random() * 100;
+                const size = 20 + Math.random() * 40;
+                const delay = Math.random() * 2;
+                
+                steam.style.left = left + '%';
+                steam.style.bottom = '0';
+                steam.style.width = size + 'px';
+                steam.style.height = size + 'px';
+                steam.style.animationDelay = delay + 's';
+                
+                container.appendChild(steam);
+                
+                setTimeout(() => {
+                    steam.remove();
+                }, 4000);
+            }, 800);
         }
 
-        // الدوال الأصلية تبقى كما هي مع بعض التحسينات
-        function initTheme() {
-            const themeToggle = document.getElementById('themeToggle');
-            const themeIcon = themeToggle.querySelector('i');
-            const body = document.body;
+        // 💧 إنشاء فقاعات الطبخ
+        function createBubbles() {
+            const container = document.getElementById('bubblesContainer');
             
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (!prefersDark) {
-                body.setAttribute('data-theme', 'light');
-                themeIcon.className = 'fas fa-sun';
-            }
-            
-            themeToggle.addEventListener('click', () => {
-                const isDark = body.getAttribute('data-theme') === 'dark';
-                body.setAttribute('data-theme', isDark ? 'light' : 'dark');
-                themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-                playToggleSound();
-            });
+            setInterval(() => {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                
+                const left = Math.random() * 100;
+                const size = 10 + Math.random() * 30;
+                const delay = Math.random() * 3;
+                
+                bubble.style.left = left + '%';
+                bubble.style.bottom = '0';
+                bubble.style.width = size + 'px';
+                bubble.style.height = size + 'px';
+                bubble.style.animationDelay = delay + 's';
+                
+                container.appendChild(bubble);
+                
+                setTimeout(() => {
+                    bubble.remove();
+                }, 8000);
+            }, 500);
         }
 
-        function playToggleSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.3);
-            
-            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-            
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.3);
-        }
-
-        function createStarRain(event) {
+        // 🌟 مطر الطعام عند النقر
+        function createFoodRain(event) {
             const starRain = document.getElementById('starRain');
             const rect = event.currentTarget.getBoundingClientRect();
             const x = rect.left + rect.width / 2;
@@ -970,8 +842,112 @@
             setTimeout(() => {
                 starRain.style.opacity = '0';
             }, 1000);
+            
+            playSound(foodSounds.chop, 0.2);
         }
 
+        // 👨‍🍳 تفاعل مع الطاهي
+        function initChefInteraction() {
+            const chef = document.getElementById('chef');
+            
+            chef.addEventListener('click', function() {
+                playSound(foodSounds.toast, 0.3);
+                
+                // تغيير تعبير الطاهي
+                const expressions = ['👨‍🍳', '😋', '👨‍🍳', '😎', '👨‍🍳', '🔥'];
+                let i = 0;
+                
+                const interval = setInterval(() => {
+                    chef.textContent = expressions[i];
+                    i++;
+                    if (i >= expressions.length) {
+                        clearInterval(interval);
+                        chef.textContent = '👨‍🍳';
+                    }
+                }, 200);
+                
+                // إطلاق شرارة من الطاهي
+                createSizzleEffect(10, 90);
+            });
+        }
+
+        // 🎂 تفاعل مع الكعكة
+        function initCakeInteraction() {
+            const cake = document.getElementById('cake');
+            
+            cake.addEventListener('click', function() {
+                playSound(foodSounds.microwave, 0.3);
+                
+                // تأثير توهج الكعكة
+                cake.style.animation = 'cakeGlow 0.3s infinite alternate';
+                
+                // إضافة شموع
+                for(let i = 0; i < 5; i++) {
+                    setTimeout(() => {
+                        createSizzleEffect(
+                            90 + Math.random() * 5,
+                            80 + Math.random() * 5
+                        );
+                    }, i * 200);
+                }
+                
+                setTimeout(() => {
+                    cake.style.animation = 'cakeGlow 3s infinite alternate';
+                }, 2000);
+            });
+        }
+
+        // ⏰ دالة تحديث الساعة
+        function updateTime() {
+            const now = new Date();
+            
+            // توقيت الرياض (توقيت السعودية)
+            const options = { 
+                timeZone: 'Asia/Riyadh',
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            
+            const timeString = now.toLocaleTimeString('en-US', options);
+            document.getElementById('currentTime').textContent = timeString;
+            
+            // تحديث كل دقيقة
+            setTimeout(updateTime, 60000);
+        }
+
+        // 🔊 إضافة أصوات للنقر على الروابط
+        function addClickSounds() {
+            const clickableElements = document.querySelectorAll('a, button, .avatar, .username, .discord-tag, .time-container');
+            
+            clickableElements.forEach(element => {
+                element.addEventListener('click', () => {
+                    playSound(foodSounds.pour, 0.2);
+                });
+            });
+            
+            // صوت خاص لتبديل الثيم
+            document.getElementById('themeToggle').addEventListener('click', () => {
+                playSound(foodSounds.microwave, 0.3);
+                changeCookingStyle();
+            });
+        }
+
+        // 🔄 تغيير أسلوب الطبخ
+        function changeCookingStyle() {
+            const style = cookingStyles[Math.floor(Math.random() * cookingStyles.length)];
+            
+            document.getElementById('themeIcon').textContent = style.icon;
+            document.getElementById('themeName').textContent = style.name;
+            
+            // تغيير اللون الأساسي
+            document.documentElement.style.setProperty('--primary-color', style.color);
+            
+            // إضافة تأثير
+            createSizzleEffect(50, 50);
+        }
+
+        // 🎂 تحديث العمر
         function calculateAge() {
             const birthDate = new Date(2005, 2, 26);
             const today = new Date();
@@ -989,114 +965,26 @@
             document.querySelector('.age').textContent = `العمر: ${age} سنة`;
         }
 
-        function createStars() {
-            const starsContainer = document.getElementById('starsContainer');
-            const starCount = 300;
-            
-            for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
-                star.classList.add('star');
-                
-                const left = Math.random() * 100;
-                const top = Math.random() * 100;
-                const size = Math.random() * 3 + 1;
-                const delay = Math.random() * 5;
-                
-                star.style.left = left + '%';
-                star.style.top = top + '%';
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                star.style.animationDelay = delay + 's';
-                
-                starsContainer.appendChild(star);
-            }
-        }
-
-        function createMeteors() {
-            const meteorsContainer = document.getElementById('meteorsContainer');
-            const meteorCount = 8;
-            
-            for (let i = 0; i < meteorCount; i++) {
-                const meteor = document.createElement('div');
-                meteor.classList.add('meteor');
-                
-                const top = Math.random() * 50;
-                const delay = Math.random() * 15;
-                const duration = Math.random() * 3 + 2;
-                
-                meteor.style.top = top + '%';
-                meteor.style.animationDelay = delay + 's';
-                meteor.style.animationDuration = duration + 's';
-                
-                meteorsContainer.appendChild(meteor);
-            }
-        }
-
-        function createClouds() {
-            const cloudsContainer = document.getElementById('cloudsContainer');
-            const cloudCount = 8;
-            
-            for (let i = 0; i < cloudCount; i++) {
-                const cloud = document.createElement('div');
-                cloud.classList.add('cloud');
-                
-                const cloudType = `cloud-${Math.floor(Math.random() * 3) + 1}`;
-                cloud.classList.add(cloudType);
-                
-                const top = Math.random() * 60 + 10;
-                const delay = Math.random() * 30;
-                const duration = Math.random() * 40 + 30;
-                
-                cloud.style.top = top + '%';
-                cloud.style.animation = `cloudMove ${duration}s linear ${delay}s infinite`;
-                
-                cloudsContainer.appendChild(cloud);
-            }
-        }
-
-        function createPlanets() {
-            const planetsContainer = document.getElementById('planetsContainer');
-            const planetColors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'];
-            
-            for (let i = 0; i < 6; i++) {
-                const planet = document.createElement('div');
-                planet.classList.add('planet');
-                
-                const left = Math.random() * 80 + 10;
-                const top = Math.random() * 60 + 20;
-                const size = Math.random() * 35 + 25;
-                const color = planetColors[i];
-                const delay = Math.random() * 3;
-                
-                planet.style.left = left + '%';
-                planet.style.top = top + '%';
-                planet.style.width = size + 'px';
-                planet.style.height = size + 'px';
-                planet.style.background = color;
-                planet.style.animationDelay = delay + 's';
-                planet.style.boxShadow = `0 0 30px ${color}`;
-                
-                planetsContainer.appendChild(planet);
-            }
-        }
-
         function openDiscord() {
             window.open('https://discord.com/users/860948173827997719', '_blank');
         }
 
         window.onload = function() {
-            initTheme();
-            createStars();
-            createMeteors();
-            createClouds();
-            createPlanets();
             updateAge();
-            updateTime(); // تشغيل الساعة
-            initPlanetsInteraction();
+            updateTime();
+            createFloatingFood();
+            createSteam();
+            createBubbles();
+            initChefInteraction();
+            initCakeInteraction();
             addClickSounds();
             
-            // تحديث الساعة أول مرة فور التحميل
-            updateTime();
+            // تطبيق أسلوب طبخ عشوائي عند التحميل
+            changeCookingStyle();
+            
+            console.log('🍕 عالم الطعام جاهز!');
+            console.log('👨‍🍳 انقر على الطاهي والكعكة');
+            console.log('🍽️ انقر على الأطعمة العائمة');
         };
     </script>
 </body>
