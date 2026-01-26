@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kaster_02 - عالم الطعام</title>
+    <title>Kaster_02 - الكون التفاعلي</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -15,13 +15,19 @@
         }
 
         :root {
-            --primary-color: #FF6B6B;
-            --bg-color: linear-gradient(to bottom, #FFF5E1, #FFE8C8);
-            --text-color: #5D4037;
-            --container-bg: rgba(255, 255, 255, 0.9);
-            --container-border: rgba(255, 182, 193, 0.3);
-            --shadow-color: rgba(251, 192, 147, 0.4);
-            --time-color: #FF5722;
+            --primary-color: #7289da;
+            --bg-color: #0a0e29;
+            --text-color: white;
+            --container-bg: rgba(255, 255, 255, 0.1);
+            --container-border: rgba(255, 255, 255, 0.2);
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --device-type: 'mobile'; /* سيتم تغييره بالجافاسكريبت */
+        }
+
+        [data-device="desktop"] {
+            --container-bg: rgba(255, 255, 255, 0.15);
+            --container-border: rgba(255, 255, 255, 0.3);
+            --shadow-color: rgba(0, 0, 0, 0.6);
         }
 
         body {
@@ -33,8 +39,8 @@
             transition: all 0.8s ease;
         }
 
-        /* مؤشر الثيم */
-        .theme-indicator {
+        /* جهاز المؤشر */
+        .device-indicator {
             position: fixed;
             top: 20px;
             left: 20px;
@@ -57,49 +63,88 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* عناصر الطعام العائمة */
-        .food-item {
-            position: absolute;
-            font-size: 2em;
-            z-index: 1;
-            animation: floatFood 15s infinite ease-in-out;
-            cursor: pointer;
+        /* تأثيرات الجوال فقط */
+        [data-device="mobile"] .stars {
+            animation: twinkleMobile 3s infinite;
+        }
+
+        [data-device="mobile"] .planet {
+            animation: planetMobile 6s infinite ease-in-out;
+        }
+
+        [data-device="mobile"] .profile-container {
+            animation: floatMobile 5s infinite ease-in-out;
+        }
+
+        @keyframes twinkleMobile {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes planetMobile {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+
+        @keyframes floatMobile {
+            0%, 100% { transform: translate(-50%, -50%); }
+            50% { transform: translate(-50%, -52%); }
+        }
+
+        /* تأثيرات الديسكتوب فقط */
+        [data-device="desktop"] {
+            perspective: 1000px;
+            transform-style: preserve-3d;
+        }
+
+        [data-device="desktop"] .profile-container {
+            transform-style: preserve-3d;
             transition: transform 0.3s ease;
-            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
         }
 
-        .food-item:hover {
-            transform: scale(1.2) rotate(15deg);
+        [data-device="desktop"] .profile-container:hover {
+            transform: translate(-50%, -50%) rotateY(5deg) rotateX(5deg);
         }
 
-        @keyframes floatFood {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            25% { transform: translateY(-20px) rotate(5deg); }
-            50% { transform: translateY(0) rotate(0deg); }
-            75% { transform: translateY(20px) rotate(-5deg); }
+        [data-device="desktop"] .stars {
+            animation: twinkleDesktop 2s infinite alternate;
         }
 
-        /* بخار الطبخ */
-        .steam {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.8);
+        [data-device="desktop"] .planet {
+            animation: planetDesktop 8s infinite linear;
+            transform-style: preserve-3d;
+        }
+
+        [data-device="desktop"] .planet:hover {
+            animation-play-state: paused;
+            transform: scale(1.5);
+        }
+
+        @keyframes twinkleDesktop {
+            0% { opacity: 0.3; filter: blur(0.5px); }
+            100% { opacity: 1; filter: blur(0); }
+        }
+
+        @keyframes planetDesktop {
+            0% { transform: rotateY(0deg) rotateX(0deg); }
+            100% { transform: rotateY(360deg) rotateX(360deg); }
+        }
+
+        /* تأثير الماوس للديسكتوب */
+        .mouse-follower {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
             border-radius: 50%;
-            animation: steamRise 4s infinite ease-out;
-            z-index: 2;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
-        @keyframes steamRise {
-            0% { 
-                transform: translateY(0) scale(0.5);
-                opacity: 0;
-            }
-            50% { 
-                opacity: 0.8;
-            }
-            100% { 
-                transform: translateY(-100px) scale(1.5);
-                opacity: 0;
-            }
+        [data-device="desktop"] .mouse-follower {
+            opacity: 0.5;
         }
 
         /* تحسينات للجوال */
@@ -130,6 +175,13 @@
                 font-size: 1em;
             }
 
+            .moon, .sun {
+                width: 50px;
+                height: 50px;
+                top: 5%;
+                right: 5%;
+            }
+
             .theme-toggle {
                 width: 45px;
                 height: 45px;
@@ -149,73 +201,30 @@
                 font-size: 0.8em;
             }
 
-            .theme-indicator {
+            .device-indicator {
                 top: 80px;
                 left: 20px;
                 font-size: 0.8em;
                 padding: 6px 12px;
             }
-
-            .food-item {
-                font-size: 1.5em;
-            }
         }
 
-        @media (max-width: 480px) {
+        @media (min-width: 769px) {
             .profile-container {
-                padding: 20px 15px;
-                border-radius: 20px;
-                margin-top: 25px;
+                max-width: 500px;
+                cursor: grab;
             }
 
-            .avatar {
-                width: 100px;
-                height: 100px;
+            .profile-container:active {
+                cursor: grabbing;
             }
 
-            .username {
-                font-size: 1.4em;
+            .avatar:hover {
+                transform: scale(1.1) rotateY(10deg);
             }
 
-            .discord-tag {
-                font-size: 1em;
-            }
-
-            .location, .age, .bio {
-                font-size: 0.9em;
-            }
-
-            .social-section {
-                gap: 8px;
-            }
-
-            .social-icon {
-                width: 38px;
-                height: 38px;
-            }
-
-            .time-container {
-                width: 110px;
-                height: 32px;
-                top: -16px;
-            }
-
-            .time-display {
-                font-size: 1.3em !important;
-            }
-
-            .time-icon {
-                font-size: 0.7em;
-            }
-
-            .theme-indicator {
-                top: 70px;
-                left: 15px;
-                font-size: 0.75em;
-            }
-
-            .food-item {
-                font-size: 1.2em;
+            .social-icon:hover {
+                transform: scale(1.2) translateY(-8px) rotateY(10deg);
             }
         }
 
@@ -256,50 +265,52 @@
         .time-display {
             font-size: 1.8em !important;
             font-weight: 800;
-            color: var(--time-color);
-            text-shadow: 0 0 10px rgba(255, 87, 34, 0.3);
+            color: white;
+            text-shadow: 0 0 10px rgba(114, 137, 218, 0.5);
             letter-spacing: 2px;
             font-family: 'Courier New', monospace;
             line-height: 1;
         }
 
-        /* فقاعات الطهي */
-        .bubble {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-            animation: bubbleFloat 8s infinite ease-in-out;
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* النجوم */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
             z-index: 1;
         }
 
-        @keyframes bubbleFloat {
-            0% { 
-                transform: translateY(0) scale(0.3);
-                opacity: 0;
-            }
-            50% { 
-                opacity: 0.7;
-            }
-            100% { 
-                transform: translateY(-100px) scale(1);
-                opacity: 0;
-            }
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
         }
 
-        /* كعكة عيد الميلاد */
-        .cake {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            font-size: 3em;
-            z-index: 5;
-            animation: cakeGlow 3s infinite alternate;
+        /* الكواكب */
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            z-index: 2;
             cursor: pointer;
+            transform-style: preserve-3d;
         }
 
-        @keyframes cakeGlow {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.1); }
+        .planet.exploding {
+            animation: planetExplode 0.8s ease-out forwards;
+        }
+
+        @keyframes planetExplode {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
+            100% { transform: scale(0); opacity: 0; }
         }
 
         .profile-container {
@@ -322,20 +333,9 @@
             overflow: hidden;
         }
 
-        .profile-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #FF6B6B, #FFD166, #06D6A0, #118AB2);
-            z-index: 1;
-        }
-
         @keyframes containerGlow {
-            0%, 100% { box-shadow: 0 25px 50px var(--shadow-color); }
-            50% { box-shadow: 0 25px 50px rgba(255, 107, 107, 0.6); }
+            0%, 100% { box-shadow: 0 25px 50px var(--shadow-color), 0 0 0px rgba(114, 137, 218, 0.5); }
+            50% { box-shadow: 0 25px 50px var(--shadow-color), 0 0 30px rgba(114, 137, 218, 0.8); }
         }
 
         .avatar-section {
@@ -347,26 +347,16 @@
             height: 150px;
             border-radius: 50%;
             border: 4px solid var(--primary-color);
-            box-shadow: 0 0 35px rgba(255, 107, 107, 0.6);
+            box-shadow: 0 0 35px rgba(114, 137, 218, 0.6);
             margin: 0 auto 20px auto;
             cursor: pointer;
             transition: all 0.3s ease;
-            background: #FFE8C8;
+            background: #1a1a2e;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             object-fit: cover;
-            position: relative;
-        }
-
-        .avatar::after {
-            content: '🍽️';
-            position: absolute;
-            bottom: -10px;
-            right: -10px;
-            font-size: 2em;
-            z-index: 2;
         }
 
         .avatar-img {
@@ -378,7 +368,7 @@
 
         .avatar:hover {
             transform: scale(1.08);
-            box-shadow: 0 0 45px var(--primary-color);
+            box-shadow: 0 0 45px rgba(114, 137, 218, 0.8);
         }
 
         .info-section {
@@ -390,14 +380,14 @@
             font-weight: bold;
             margin-bottom: 5px;
             color: var(--text-color);
-            text-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
+            text-shadow: 0 0 15px rgba(114, 137, 218, 0.9);
             cursor: pointer;
             transition: all 0.3s ease;
             display: inline-block;
         }
 
         .username:hover {
-            text-shadow: 0 0 25px rgba(255, 107, 107, 0.5);
+            text-shadow: 0 0 25px rgba(114, 137, 218, 1);
             transform: scale(1.05);
         }
 
@@ -411,8 +401,8 @@
         }
 
         .discord-tag:hover {
-            color: #FF8E8E;
-            text-shadow: 0 0 15px rgba(255, 107, 107, 0.7);
+            color: #8ba0ff;
+            text-shadow: 0 0 15px rgba(114, 137, 218, 0.7);
             transform: scale(1.05);
         }
 
@@ -443,7 +433,6 @@
         .bio-main {
             font-weight: bold;
             margin-bottom: 5px;
-            color: #FF5722;
         }
 
         .social-section {
@@ -458,13 +447,13 @@
             width: 45px;
             height: 45px;
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 1px solid rgba(255, 107, 107, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             font-size: 1.2em;
             color: var(--text-color);
             text-decoration: none;
@@ -473,21 +462,20 @@
 
         .social-icon:hover {
             transform: scale(1.15) translateY(-5px);
-            background: rgba(255, 107, 107, 0.2);
-            box-shadow: 0 10px 25px var(--shadow-color);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
-        /* ألوان الأيقونات حسب نوع الطعام */
-        .youtube { background: rgba(255, 0, 0, 0.2) !important; border-color: rgba(255, 0, 0, 0.3) !important; }
-        .instagram { background: rgba(225, 48, 108, 0.2) !important; border-color: rgba(225, 48, 108, 0.3) !important; }
-        .snapchat { background: rgba(255, 252, 0, 0.2) !important; border-color: rgba(255, 252, 0, 0.3) !important; }
-        .twitter { background: rgba(29, 161, 242, 0.2) !important; border-color: rgba(29, 161, 242, 0.3) !important; }
-        .tiktok { background: rgba(0, 0, 0, 0.2) !important; border-color: rgba(0, 0, 0, 0.3) !important; }
-        .discord { background: rgba(114, 137, 218, 0.2) !important; border-color: rgba(114, 137, 218, 0.3) !important; }
-        .spotify { background: rgba(30, 215, 96, 0.2) !important; border-color: rgba(30, 215, 96, 0.3) !important; }
-        .email { background: rgba(66, 133, 244, 0.2) !important; border-color: rgba(66, 133, 244, 0.3) !important; }
-        .fortnite-gg { background: rgba(255, 165, 0, 0.2) !important; border-color: rgba(255, 165, 0, 0.3) !important; }
-        .fortnite { background: rgba(148, 51, 255, 0.2) !important; border-color: rgba(148, 51, 255, 0.3) !important; }
+        .youtube { background: rgba(255, 0, 0, 0.3) !important; }
+        .instagram { background: rgba(225, 48, 108, 0.3) !important; }
+        .snapchat { background: rgba(255, 252, 0, 0.3) !important; }
+        .twitter { background: rgba(29, 161, 242, 0.3) !important; }
+        .tiktok { background: rgba(0, 0, 0, 0.3) !important; }
+        .discord { background: rgba(114, 137, 218, 0.3) !important; }
+        .spotify { background: rgba(30, 215, 96, 0.3) !important; }
+        .email { background: rgba(66, 133, 244, 0.3) !important; }
+        .fortnite-gg { background: rgba(255, 165, 0, 0.3) !important; }
+        .fortnite { background: rgba(148, 51, 255, 0.3) !important; }
 
         .fortnite img {
             width: 50% !important;
@@ -508,7 +496,7 @@
 
         .falling-star {
             position: absolute;
-            background: linear-gradient(45deg, transparent, #FF6B6B, transparent);
+            background: linear-gradient(45deg, transparent, white, transparent);
             width: 3px;
             height: 20px;
             border-radius: 50%;
@@ -555,74 +543,50 @@
             transition: all 0.3s ease;
         }
 
-        /* تأثير القلي */
-        .sizzle {
+        .explosion-particles {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #FFD700;
-            border-radius: 50%;
-            animation: sizzlePop 0.5s ease-out forwards;
+            pointer-events: none;
             z-index: 3;
         }
 
-        @keyframes sizzlePop {
-            0% { transform: scale(0); opacity: 1; }
-            100% { transform: scale(2); opacity: 0; }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: particleFloat 1.5s ease-out forwards;
         }
 
-        /* طاهي صغير */
-        .chef {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            font-size: 3em;
-            z-index: 5;
-            animation: chefWave 5s infinite;
-            cursor: pointer;
-        }
-
-        @keyframes chefWave {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(10deg); }
-            75% { transform: rotate(-10deg); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+        @keyframes particleFloat {
+            0% { 
+                transform: translate(0, 0) scale(1); 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translate(var(--tx), var(--ty)) scale(0); 
+                opacity: 0; 
+            }
         }
     </style>
 </head>
-<body>
-    <!-- مؤشر الثيم -->
-    <div class="theme-indicator" id="themeIndicator">
-        <span id="themeIcon">🍕</span>
-        <span id="themeName">عالم الطعام</span>
+<body data-device="mobile">
+    <!-- مؤشر الجهاز -->
+    <div class="device-indicator" id="deviceIndicator">
+        <span id="deviceIcon">📱</span>
+        <span id="deviceName">جوال</span>
     </div>
     
-    <!-- عناصر الطعام العائمة -->
-    <div id="foodContainer"></div>
+    <!-- تابع الماوس للديسكتوب -->
+    <div class="mouse-follower" id="mouseFollower"></div>
     
-    <!-- بخار الطبخ -->
-    <div id="steamContainer"></div>
-    
-    <!-- فقاعات الطبخ -->
-    <div id="bubblesContainer"></div>
-    
-    <!-- طاهي -->
-    <div class="chef" id="chef">👨‍🍳</div>
-    
-    <!-- كعكة -->
-    <div class="cake" id="cake">🎂</div>
+    <div class="stars" id="starsContainer"></div>
+    <div id="planetsContainer"></div>
     
     <div class="star-rain" id="starRain"></div>
     
     <div class="theme-toggle" id="themeToggle">
-        <i class="fas fa-utensils"></i>
+        <i class="fas fa-moon"></i>
     </div>
     
-    <div class="profile-container">
+    <div class="profile-container" id="profileContainer">
         <!-- الساعة -->
         <div class="time-container" id="timeContainer">
             <i class="fas fa-clock time-icon"></i>
@@ -641,74 +605,327 @@
             <div class="location">🇸🇦 السعودية 📍</div>
             <div class="age">العمر: 20 سنة</div>
             <div class="bio">
-                <div class="bio-main">مطور و مصمم مواقع ✨ | 🍕 عاشق للطعام</div>
+                <div class="bio-main">مطور و مصمم مواقع ✨</div>
             </div>
         </div>
         
         <div class="social-section">
-            <a href="https://www.youtube.com/@kaster_02I" target="_blank" class="social-icon youtube" onclick="createFoodRain(event)">
+            <a href="https://www.youtube.com/@kaster_02I" target="_blank" class="social-icon youtube" onclick="createStarRain(event)">
                 <i class="fab fa-youtube"></i>
             </a>
-            <a href="https://www.instagram.com/kaster_02/" target="_blank" class="social-icon instagram" onclick="createFoodRain(event)">
+            <a href="https://www.instagram.com/kaster_02/" target="_blank" class="social-icon instagram" onclick="createStarRain(event)">
                 <i class="fab fa-instagram"></i>
             </a>
-            <a href="https://www.snapchat.com/@kaster_02" target="_blank" class="social-icon snapchat" onclick="createFoodRain(event)">
+            <a href="https://www.snapchat.com/@kaster_02" target="_blank" class="social-icon snapchat" onclick="createStarRain(event)">
                 <i class="fab fa-snapchat"></i>
             </a>
-            <a href="https://x.com/kaster_02" target="_blank" class="social-icon twitter" onclick="createFoodRain(event)">
+            <a href="https://x.com/kaster_02" target="_blank" class="social-icon twitter" onclick="createStarRain(event)">
                 <i class="fab fa-twitter"></i>
             </a>
-            <a href="https://www.tiktok.com/@kaster_02" target="_blank" class="social-icon tiktok" onclick="createFoodRain(event)">
+            <a href="https://www.tiktok.com/@kaster_02" target="_blank" class="social-icon tiktok" onclick="createStarRain(event)">
                 <i class="fab fa-tiktok"></i>
             </a>
-            <a href="https://open.spotify.com/playlist/53SjuiCGYO52gdRffERzSq" target="_blank" class="social-icon spotify" onclick="createFoodRain(event)">
+            <a href="https://open.spotify.com/playlist/53SjuiCGYO52gdRffERzSq" target="_blank" class="social-icon spotify" onclick="createStarRain(event)">
                 <i class="fab fa-spotify"></i>
             </a>
-            <a href="mailto:gogjdu887@gmail.com" class="social-icon email" onclick="createFoodRain(event)">
+            <a href="mailto:gogjdu887@gmail.com" class="social-icon email" onclick="createStarRain(event)">
                 <i class="fas fa-envelope"></i>
             </a>
-            <a href="#" onclick="openDiscord(); createFoodRain(event)" class="social-icon discord">
+            <a href="#" onclick="openDiscord(); createStarRain(event)" class="social-icon discord">
                 <i class="fab fa-discord"></i>
             </a>
-            <a href="https://fortnite.gg/creator?name=tnv" target="_blank" class="social-icon fortnite-gg" onclick="createFoodRain(event)">
+            <a href="https://fortnite.gg/creator?name=tnv" target="_blank" class="social-icon fortnite-gg" onclick="createStarRain(event)">
                 <i class="fas fa-smile"></i>
             </a>
-            <a href="https://www.fortnite.com/@tnv?lang=ar" target="_blank" class="social-icon fortnite" onclick="createFoodRain(event)">
+            <a href="https://www.fortnite.com/@tnv?lang=ar" target="_blank" class="social-icon fortnite" onclick="createStarRain(event)">
                 <img src="https://static-assets-prod.epicgames.com/fortnite/static/favicon.ico" alt="Fortnite">
             </a>
         </div>
     </div>
 
     <script>
-        // ⚡ الأصوات الجديدة للطعام
-        const foodSounds = {
-            sizzle: 'https://assets.mixkit.co/sfx/preview/mixkit-cooking-oil-sizzle-887.mp3',
-            chop: 'https://assets.mixkit.co/sfx/preview/mixkit-knife-cutting-vegetables-2450.mp3',
-            pour: 'https://assets.mixkit.co/sfx/preview/mixkit-pouring-water-into-a-glass-433.mp3',
-            bite: 'https://assets.mixkit.co/sfx/preview/mixkit-biting-into-a-crisp-apple-1999.mp3',
-            microwave: 'https://assets.mixkit.co/sfx/preview/mixkit-microwave-oven-beep-1094.mp3',
-            toast: 'https://assets.mixkit.co/sfx/preview/mixkit-toaster-ding-1030.mp3'
+        // 📱 اكتشاف نوع الجهاز
+        function detectDevice() {
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isTablet = /iPad|Android(?!.*Mobile)|Tablet|Silk/i.test(navigator.userAgent);
+            
+            if (isMobile || window.innerWidth <= 768) {
+                return 'mobile';
+            } else if (isTablet) {
+                return 'tablet';
+            } else {
+                return 'desktop';
+            }
+        }
+
+        // 🎮 تطبيق إعدادات الجهاز
+        function applyDeviceSettings() {
+            const deviceType = detectDevice();
+            const body = document.body;
+            const deviceIcon = document.getElementById('deviceIcon');
+            const deviceName = document.getElementById('deviceName');
+            
+            // تعيين سمة الجهاز
+            body.setAttribute('data-device', deviceType);
+            
+            // تحديث المؤشر
+            if (deviceType === 'mobile') {
+                deviceIcon.textContent = '📱';
+                deviceName.textContent = 'جوال';
+            } else if (deviceType === 'tablet') {
+                deviceIcon.textContent = '📟';
+                deviceName.textContent = 'تابلت';
+            } else {
+                deviceIcon.textContent = '💻';
+                deviceName.textContent = 'كمبيوتر';
+            }
+            
+            // تطبيق الإعدادات الخاصة
+            if (deviceType === 'desktop') {
+                initDesktopFeatures();
+            } else {
+                initMobileFeatures();
+            }
+            
+            console.log(`📱 الجهاز المكتشف: ${deviceType}`);
+            console.log(`🖥️ عرض الشاشة: ${window.innerWidth}px`);
+        }
+
+        // 💻 مميزات الديسكتوب
+        function initDesktopFeatures() {
+            // تابع الماوس
+            const mouseFollower = document.getElementById('mouseFollower');
+            
+            document.addEventListener('mousemove', (e) => {
+                mouseFollower.style.left = e.clientX + 'px';
+                mouseFollower.style.top = e.clientY + 'px';
+            });
+            
+            // تأثيرات ثلاثية الأبعاد
+            const profileContainer = document.getElementById('profileContainer');
+            
+            profileContainer.addEventListener('mousemove', (e) => {
+                const xAxis = (e.offsetY / profileContainer.offsetHeight - 0.5) * 10;
+                const yAxis = (e.offsetX / profileContainer.offsetWidth - 0.5) * -10;
+                profileContainer.style.transform = `translate(-50%, -50%) perspective(1000px) rotateX(${xAxis}deg) rotateY(${yAxis}deg)`;
+            });
+            
+            profileContainer.addEventListener('mouseleave', () => {
+                profileContainer.style.transform = 'translate(-50%, -50%)';
+            });
+            
+            // إمكانية السحب
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+            
+            profileContainer.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                initialX = profileContainer.offsetLeft;
+                initialY = profileContainer.offsetTop;
+                profileContainer.style.cursor = 'grabbing';
+            });
+            
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                
+                profileContainer.style.left = `calc(50% + ${dx}px)`;
+                profileContainer.style.top = `calc(50% + ${dy}px)`;
+                profileContainer.style.transform = 'translate(-50%, -50%)';
+            });
+            
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                profileContainer.style.cursor = 'grab';
+                
+                // العودة للمركز بعد ثانية
+                setTimeout(() => {
+                    profileContainer.style.left = '50%';
+                    profileContainer.style.top = '50%';
+                }, 1000);
+            });
+            
+            // أزرار لوحة المفاتيح
+            document.addEventListener('keydown', (e) => {
+                if (e.key === ' ') { // مسافة
+                    createStarExplosion();
+                }
+            });
+        }
+
+        // 📱 مميزات الموبايل
+        function initMobileFeatures() {
+            // تأثيرات اللمس
+            const profileContainer = document.getElementById('profileContainer');
+            
+            profileContainer.addEventListener('touchstart', () => {
+                profileContainer.style.transform = 'translate(-50%, -50%) scale(0.98)';
+            });
+            
+            profileContainer.addEventListener('touchend', () => {
+                profileContainer.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+            
+            // التمرير السريع
+            let touchStartY = 0;
+            let touchEndY = 0;
+            
+            document.addEventListener('touchstart', (e) => {
+                touchStartY = e.changedTouches[0].screenY;
+            });
+            
+            document.addEventListener('touchend', (e) => {
+                touchEndY = e.changedTouches[0].screenY;
+                handleSwipe(touchStartY, touchEndY);
+            });
+            
+            function handleSwipe(startY, endY) {
+                const swipeDistance = Math.abs(endY - startY);
+                
+                if (swipeDistance > 50) {
+                    if (endY < startY) {
+                        // تمرير لأعلى
+                        createStarRainAtCenter();
+                    }
+                }
+            }
+            
+            // هز الجهاز
+            if (typeof DeviceMotionEvent !== 'undefined') {
+                let lastShake = 0;
+                
+                window.addEventListener('devicemotion', (e) => {
+                    const acceleration = e.accelerationIncludingGravity;
+                    const magnitude = Math.sqrt(
+                        acceleration.x * acceleration.x +
+                        acceleration.y * acceleration.y +
+                        acceleration.z * acceleration.z
+                    );
+                    
+                    if (magnitude > 15) {
+                        const now = Date.now();
+                        if (now - lastShake > 1000) {
+                            lastShake = now;
+                            shakeEffect();
+                        }
+                    }
+                });
+            }
+        }
+
+        // ⭐ إنشاء نجمة في المركز (للموبايل)
+        function createStarRainAtCenter() {
+            const starRain = document.getElementById('starRain');
+            const centerX = window.innerWidth / 2;
+            
+            for (let i = 0; i < 10; i++) {
+                const star = document.createElement('div');
+                star.classList.add('falling-star');
+                star.style.left = (centerX + Math.random() * 100 - 50) + 'px';
+                star.style.animationDelay = (Math.random() * 0.5) + 's';
+                starRain.appendChild(star);
+                
+                setTimeout(() => {
+                    star.remove();
+                }, 1000);
+            }
+            
+            starRain.style.opacity = '1';
+            setTimeout(() => {
+                starRain.style.opacity = '0';
+            }, 1000);
+        }
+
+        // 📱 تأثير الهز (للموبايل)
+        function shakeEffect() {
+            const profileContainer = document.getElementById('profileContainer');
+            
+            profileContainer.style.animation = 'none';
+            setTimeout(() => {
+                profileContainer.style.animation = 'floatMobile 5s infinite ease-in-out, shake 0.5s ease-in-out';
+                setTimeout(() => {
+                    profileContainer.style.animation = 'floatMobile 5s infinite ease-in-out';
+                }, 500);
+            }, 10);
+            
+            // إضافة أنماط الاهتزاز
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes shake {
+                    0%, 100% { transform: translate(-50%, -50%); }
+                    25% { transform: translate(calc(-50% + 10px), -50%); }
+                    50% { transform: translate(-50%, calc(-50% + 10px)); }
+                    75% { transform: translate(calc(-50% - 10px), -50%); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // تفجير نجمة
+            createStarExplosion();
+        }
+
+        // 💥 انفجار النجوم (للديسكتوب)
+        function createStarExplosion() {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            
+            for (let i = 0; i < 20; i++) {
+                const star = document.createElement('div');
+                star.classList.add('falling-star');
+                star.style.left = centerX + 'px';
+                star.style.top = centerY + 'px';
+                star.style.animation = `explodeStar 1s ease-out forwards ${i * 0.05}s`;
+                
+                document.body.appendChild(star);
+                
+                setTimeout(() => {
+                    star.remove();
+                }, 1000);
+            }
+            
+            // إضافة أنماط الانفجار
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes explodeStar {
+                    0% { 
+                        transform: translate(0, 0) scale(0); 
+                        opacity: 1; 
+                    }
+                    100% { 
+                        transform: translate(var(--ex, 0), var(--ey, 0)) scale(1); 
+                        opacity: 0; 
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // تعيين اتجاهات عشوائية للانفجار
+            document.querySelectorAll('.falling-star').forEach((star, i) => {
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 100 + Math.random() * 200;
+                const ex = Math.cos(angle) * distance;
+                const ey = Math.sin(angle) * distance;
+                star.style.setProperty('--ex', ex + 'px');
+                star.style.setProperty('--ey', ey + 'px');
+            });
+        }
+
+        // باقي الكود يبقى كما هو مع بعض التعديلات
+        const soundEffects = {
+            planet: [
+                'https://assets.mixkit.co/sfx/preview/mixkit-bubble-pop-up-alert-notification-2357.mp3',
+                'https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3',
+                'https://assets.mixkit.co/sfx/preview/mixkit-arcade-retro-game-over-213.mp3',
+                'https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3'
+            ],
+            click: 'https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3',
+            toggle: 'https://assets.mixkit.co/sfx/preview/mixkit-light-switch-click-1161.mp3'
         };
 
-        // 🍽️ أنواع الطعام المختلفة
-        const foodItems = [
-            '🍕', '🍔', '🌭', '🍟', '🌮', '🌯', '🥗', '🍣', '🍜', '🍛',
-            '🍚', '🍙', '🍘', '🍥', '🥟', '🍤', '🍦', '🍧', '🍨', '🎂',
-            '🍮', '🍩', '🍪', '🧁', '🍫', '🍬', '🍭', '🍿', '🥨', '🥐',
-            '🥯', '🍞', '🥖', '🧀', '🥚', '🍳', '🧈', '🥞', '🧇', '🥓',
-            '🥩', '🍗', '🍖', '🦴', '🌭', '🍔', '🍟', '🍕', '🥪', '🥙'
-        ];
-
-        // 🍳 أنواع الطبخ
-        const cookingStyles = [
-            { name: "إيطالي", icon: "🍕", color: "#FF6B6B" },
-            { name: "ياباني", icon: "🍣", color: "#FF8E8E" },
-            { name: "مكسيكي", icon: "🌮", color: "#FFB347" },
-            { name: "حلويات", icon: "🎂", color: "#FFD166" },
-            { name: "وجبات سريعة", icon: "🍔", color: "#06D6A0" }
-        ];
-
-        // 🔊 دالة تشغيل الصوت
         function playSound(soundUrl, volume = 0.3) {
             try {
                 const audio = new Audio(soundUrl);
@@ -719,114 +936,137 @@
             }
         }
 
-        // 🍕 إنشاء طعام عائم
-        function createFloatingFood() {
-            const container = document.getElementById('foodContainer');
+        function updateTime() {
+            const now = new Date();
+            const options = { 
+                timeZone: 'Asia/Riyadh',
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit'
+            };
             
-            for (let i = 0; i < 20; i++) {
-                const food = document.createElement('div');
-                food.className = 'food-item';
-                food.textContent = foodItems[Math.floor(Math.random() * foodItems.length)];
+            const timeString = now.toLocaleTimeString('en-US', options);
+            document.getElementById('currentTime').textContent = timeString;
+            setTimeout(updateTime, 60000);
+        }
+
+        function createStars() {
+            const starsContainer = document.getElementById('starsContainer');
+            const starCount = detectDevice() === 'desktop' ? 400 : 200;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
                 
                 const left = Math.random() * 100;
                 const top = Math.random() * 100;
-                const delay = Math.random() * 20;
-                const duration = 15 + Math.random() * 10;
+                const size = Math.random() * (detectDevice() === 'desktop' ? 4 : 2) + 1;
+                const delay = Math.random() * 5;
                 
-                food.style.left = left + '%';
-                food.style.top = top + '%';
-                food.style.animationDelay = delay + 's';
-                food.style.animationDuration = duration + 's';
-                food.style.fontSize = (1 + Math.random() * 1.5) + 'em';
+                star.style.left = left + '%';
+                star.style.top = top + '%';
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.animationDelay = delay + 's';
                 
-                food.addEventListener('click', function() {
-                    playSound(foodSounds.bite, 0.2);
-                    createSizzleEffect(left, top);
-                    this.style.transform = 'scale(0) rotate(360deg)';
-                    setTimeout(() => {
-                        this.remove();
-                        setTimeout(createFloatingFood, 1000);
-                    }, 300);
-                });
-                
-                container.appendChild(food);
+                starsContainer.appendChild(star);
             }
         }
 
-        // 🔥 تأثير القلي
-        function createSizzleEffect(x, y) {
-            const sizzle = document.createElement('div');
-            sizzle.className = 'sizzle';
-            sizzle.style.left = x + '%';
-            sizzle.style.top = y + '%';
-            document.body.appendChild(sizzle);
+        function createPlanets() {
+            const planetsContainer = document.getElementById('planetsContainer');
+            const planetColors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'];
+            const planetCount = detectDevice() === 'desktop' ? 8 : 4;
             
-            playSound(foodSounds.sizzle, 0.2);
-            
-            setTimeout(() => {
-                sizzle.remove();
-            }, 500);
-        }
-
-        // ☁️ إنشاء بخار الطبخ
-        function createSteam() {
-            const container = document.getElementById('steamContainer');
-            
-            setInterval(() => {
-                const steam = document.createElement('div');
-                steam.className = 'steam';
+            for (let i = 0; i < planetCount; i++) {
+                const planet = document.createElement('div');
+                planet.classList.add('planet');
                 
-                const left = Math.random() * 100;
-                const size = 20 + Math.random() * 40;
-                const delay = Math.random() * 2;
-                
-                steam.style.left = left + '%';
-                steam.style.bottom = '0';
-                steam.style.width = size + 'px';
-                steam.style.height = size + 'px';
-                steam.style.animationDelay = delay + 's';
-                
-                container.appendChild(steam);
-                
-                setTimeout(() => {
-                    steam.remove();
-                }, 4000);
-            }, 800);
-        }
-
-        // 💧 إنشاء فقاعات الطبخ
-        function createBubbles() {
-            const container = document.getElementById('bubblesContainer');
-            
-            setInterval(() => {
-                const bubble = document.createElement('div');
-                bubble.className = 'bubble';
-                
-                const left = Math.random() * 100;
-                const size = 10 + Math.random() * 30;
+                const left = Math.random() * 80 + 10;
+                const top = Math.random() * 60 + 20;
+                const size = detectDevice() === 'desktop' ? 
+                    (Math.random() * 40 + 30) : 
+                    (Math.random() * 25 + 15);
+                const color = planetColors[i % planetColors.length];
                 const delay = Math.random() * 3;
                 
-                bubble.style.left = left + '%';
-                bubble.style.bottom = '0';
-                bubble.style.width = size + 'px';
-                bubble.style.height = size + 'px';
-                bubble.style.animationDelay = delay + 's';
+                planet.style.left = left + '%';
+                planet.style.top = top + '%';
+                planet.style.width = size + 'px';
+                planet.style.height = size + 'px';
+                planet.style.background = color;
+                planet.style.animationDelay = delay + 's';
+                planet.style.boxShadow = `0 0 30px ${color}`;
                 
-                container.appendChild(bubble);
+                // تأثيرات خاصة بالديسكتوب
+                if (detectDevice() === 'desktop') {
+                    planet.style.boxShadow = `0 0 50px ${color}, inset 0 0 20px rgba(255,255,255,0.2)`;
+                }
                 
-                setTimeout(() => {
-                    bubble.remove();
-                }, 8000);
-            }, 500);
+                planet.addEventListener('click', function(e) {
+                    if (this.classList.contains('exploding')) return;
+                    
+                    const randomSound = soundEffects.planet[Math.floor(Math.random() * soundEffects.planet.length)];
+                    playSound(randomSound, 0.4);
+                    
+                    this.classList.add('exploding');
+                    createExplosionParticles(e.clientX, e.clientY, this.style.background);
+                    
+                    setTimeout(() => {
+                        this.classList.remove('exploding');
+                        this.style.opacity = '1';
+                        this.style.transform = 'scale(1)';
+                    }, 3000);
+                });
+                
+                planetsContainer.appendChild(planet);
+            }
         }
 
-        // 🌟 مطر الطعام عند النقر
-        function createFoodRain(event) {
+        function createExplosionParticles(x, y, color) {
+            const particlesContainer = document.createElement('div');
+            particlesContainer.className = 'explosion-particles';
+            document.body.appendChild(particlesContainer);
+            
+            const particleCount = detectDevice() === 'desktop' ? 30 : 15;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.background = color;
+                particle.style.width = (Math.random() * 10 + 5) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 100 + 50;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--tx', tx + 'px');
+                particle.style.setProperty('--ty', ty + 'px');
+                
+                particlesContainer.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 1500);
+            }
+            
+            setTimeout(() => {
+                particlesContainer.remove();
+            }, 1500);
+        }
+
+        function createStarRain(event) {
             const starRain = document.getElementById('starRain');
             const rect = event.currentTarget.getBoundingClientRect();
             const x = rect.left + rect.width / 2;
             
-            for (let i = 0; i < 15; i++) {
+            const count = detectDevice() === 'desktop' ? 20 : 10;
+            
+            for (let i = 0; i < count; i++) {
                 const star = document.createElement('div');
                 star.classList.add('falling-star');
                 star.style.left = (x + Math.random() * 100 - 50) + 'px';
@@ -842,112 +1082,8 @@
             setTimeout(() => {
                 starRain.style.opacity = '0';
             }, 1000);
-            
-            playSound(foodSounds.chop, 0.2);
         }
 
-        // 👨‍🍳 تفاعل مع الطاهي
-        function initChefInteraction() {
-            const chef = document.getElementById('chef');
-            
-            chef.addEventListener('click', function() {
-                playSound(foodSounds.toast, 0.3);
-                
-                // تغيير تعبير الطاهي
-                const expressions = ['👨‍🍳', '😋', '👨‍🍳', '😎', '👨‍🍳', '🔥'];
-                let i = 0;
-                
-                const interval = setInterval(() => {
-                    chef.textContent = expressions[i];
-                    i++;
-                    if (i >= expressions.length) {
-                        clearInterval(interval);
-                        chef.textContent = '👨‍🍳';
-                    }
-                }, 200);
-                
-                // إطلاق شرارة من الطاهي
-                createSizzleEffect(10, 90);
-            });
-        }
-
-        // 🎂 تفاعل مع الكعكة
-        function initCakeInteraction() {
-            const cake = document.getElementById('cake');
-            
-            cake.addEventListener('click', function() {
-                playSound(foodSounds.microwave, 0.3);
-                
-                // تأثير توهج الكعكة
-                cake.style.animation = 'cakeGlow 0.3s infinite alternate';
-                
-                // إضافة شموع
-                for(let i = 0; i < 5; i++) {
-                    setTimeout(() => {
-                        createSizzleEffect(
-                            90 + Math.random() * 5,
-                            80 + Math.random() * 5
-                        );
-                    }, i * 200);
-                }
-                
-                setTimeout(() => {
-                    cake.style.animation = 'cakeGlow 3s infinite alternate';
-                }, 2000);
-            });
-        }
-
-        // ⏰ دالة تحديث الساعة
-        function updateTime() {
-            const now = new Date();
-            
-            // توقيت الرياض (توقيت السعودية)
-            const options = { 
-                timeZone: 'Asia/Riyadh',
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit'
-            };
-            
-            const timeString = now.toLocaleTimeString('en-US', options);
-            document.getElementById('currentTime').textContent = timeString;
-            
-            // تحديث كل دقيقة
-            setTimeout(updateTime, 60000);
-        }
-
-        // 🔊 إضافة أصوات للنقر على الروابط
-        function addClickSounds() {
-            const clickableElements = document.querySelectorAll('a, button, .avatar, .username, .discord-tag, .time-container');
-            
-            clickableElements.forEach(element => {
-                element.addEventListener('click', () => {
-                    playSound(foodSounds.pour, 0.2);
-                });
-            });
-            
-            // صوت خاص لتبديل الثيم
-            document.getElementById('themeToggle').addEventListener('click', () => {
-                playSound(foodSounds.microwave, 0.3);
-                changeCookingStyle();
-            });
-        }
-
-        // 🔄 تغيير أسلوب الطبخ
-        function changeCookingStyle() {
-            const style = cookingStyles[Math.floor(Math.random() * cookingStyles.length)];
-            
-            document.getElementById('themeIcon').textContent = style.icon;
-            document.getElementById('themeName').textContent = style.name;
-            
-            // تغيير اللون الأساسي
-            document.documentElement.style.setProperty('--primary-color', style.color);
-            
-            // إضافة تأثير
-            createSizzleEffect(50, 50);
-        }
-
-        // 🎂 تحديث العمر
         function calculateAge() {
             const birthDate = new Date(2005, 2, 26);
             const today = new Date();
@@ -970,21 +1106,17 @@
         }
 
         window.onload = function() {
+            applyDeviceSettings(); // اكتشاف الجهاز أولاً
+            createStars();
+            createPlanets();
             updateAge();
             updateTime();
-            createFloatingFood();
-            createSteam();
-            createBubbles();
-            initChefInteraction();
-            initCakeInteraction();
-            addClickSounds();
             
-            // تطبيق أسلوب طبخ عشوائي عند التحميل
-            changeCookingStyle();
+            // إضافة إعادة تحميل عند تغيير الحجم
+            window.addEventListener('resize', applyDeviceSettings);
             
-            console.log('🍕 عالم الطعام جاهز!');
-            console.log('👨‍🍳 انقر على الطاهي والكعكة');
-            console.log('🍽️ انقر على الأطعمة العائمة');
+            console.log('🚀 الكون التفاعلي جاهز!');
+            console.log('📱 تجربة مختلفة للجوال والكمبيوتر');
         };
     </script>
 </body>
