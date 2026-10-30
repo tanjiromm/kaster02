@@ -1,1774 +1,220 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>moejafarx - الكون التفاعلي</title>
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/5968/5968756.png" type="image/png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        :root {
-            --primary-color: #7289da;
-            --bg-color: #0a0e29;
-            --text-color: white;
-            --container-bg: rgba(255, 255, 255, 0.1);
-            --container-border: rgba(255, 255, 255, 0.2);
-            --shadow-color: rgba(0, 0, 0, 0.4);
-            --device-type: 'mobile';
-        }
-
-        [data-theme="light"] {
-            --bg-color: #87CEEB;
-            --text-color: #2c3e50;
-            --container-bg: rgba(255, 255, 255, 0.9);
-            --container-border: rgba(255, 255, 255, 0.3);
-            --shadow-color: rgba(0, 0, 0, 0.1);
-        }
-
-        [data-device="desktop"] {
-            --container-bg: rgba(255, 255, 255, 0.15);
-            --container-border: rgba(255, 255, 255, 0.3);
-            --shadow-color: rgba(0, 0, 0, 0.6);
-        }
-
-        body {
-            background: var(--bg-color);
-            color: var(--text-color);
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-            transition: all 0.8s ease;
-        }
-
-        /* جهاز المؤشر */
-        .device-indicator {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-            background: var(--container-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--container-border);
-            border-radius: 25px;
-            padding: 8px 15px;
-            font-size: 0.9em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 5px 15px var(--shadow-color);
-            animation: fadeIn 1s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* تأثيراتtt الجوال فقط */
-        [data-device="mobile"] .stars {
-            animation: twinkleMobile 3s infinite;
-        }
-
-        [data-device="mobile"] .planet {
-            animation: planetMobile 6s infinite ease-in-out;
-        }
-
-        [data-device="mobile"] .profile-container {
-            animation: floatMobile 5s infinite ease-in-out;
-        }
-
-        @keyframes twinkleMobile {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-
-        @keyframes planetMobile {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-10px) scale(1.05); }
-        }
-
-        @keyframes floatMobile {
-            0%, 100% { transform: translate(-50%, -50%); }
-            50% { transform: translate(-50%, -52%); }
-        }
-
-        /* تأثيرات الديسكتوب فقط */
-        [data-device="desktop"] {
-            perspective: 1000px;
-            transform-style: preserve-3d;
-        }
-
-        [data-device="desktop"] .profile-container {
-            transform-style: preserve-3d;
-            transition: transform 0.3s ease;
-        }
-
-        [data-device="desktop"] .profile-container:hover {
-            transform: translate(-50%, -50%) rotateY(5deg) rotateX(5deg);
-        }
-
-        [data-device="desktop"] .stars {
-            animation: twinkleDesktop 2s infinite alternate;
-        }
-
-        [data-device="desktop"] .planet {
-            animation: planetDesktop 8s infinite linear;
-            transform-style: preserve-3d;
-        }
-
-        [data-device="desktop"] .planet:hover {
-            animation-play-state: paused;
-            transform: scale(1.5);
-        }
-
-        @keyframes twinkleDesktop {
-            0% { opacity: 0.3; filter: blur(0.5px); }
-            100% { opacity: 1; filter: blur(0); }
-        }
-
-        @keyframes planetDesktop {
-            0% { transform: rotateY(0deg) rotateX(0deg); }
-            100% { transform: rotateY(360deg) rotateX(360deg); }
-        }
-
-        /* تأثير الماوس للديسكتوب - إعصار 🌪️ */
-        .mouse-follower {
-            position: fixed;
-            width: 20px;
-            height: 20px;
-            background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0;
-            transition: opacity 0.3s, transform 0.2s;
-        }
-
-        [data-device="desktop"] .mouse-follower {
-            opacity: 0.5;
-        }
-
-        .mouse-trail {
-            position: fixed;
-            width: 30px;
-            height: 30px;
-            background: radial-gradient(circle, transparent 30%, rgba(114, 137, 218, 0.3) 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9998;
-            opacity: 0;
-            transform-origin: center;
-        }
-
-        .tornado-effect {
-            position: fixed;
-            width: 100px;
-            height: 150px;
-            background: linear-gradient(to top, transparent, rgba(114, 137, 218, 0.2));
-            border-radius: 50% 50% 0 0;
-            pointer-events: none;
-            z-index: 9997;
-            opacity: 0;
-            filter: blur(10px);
-            transform-origin: bottom center;
-        }
-
-        /* تأثير قوس قزح عند النقر على الاسم 🌈 */
-        .rainbow-text {
-            background: linear-gradient(
-                90deg,
-                #ff0000, #ff9900, #ffff00, 
-                #00ff00, #0099ff, #6600ff, 
-                #ff00ff
-            );
-            background-size: 400% 100%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: rainbow 3s linear infinite;
-            text-shadow: none !important;
-        }
-
-        @keyframes rainbow {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 400% 50%; }
-        }
-
-        /* تأثير ألعاب نارية عند الوصول 🎆 */
-        .fireworks-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9990;
-            opacity: 0;
-        }
-
-        .firework {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            animation: fireworkLaunch 1.5s ease-out forwards;
-        }
-
-        .firework-particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            animation: fireworkExplode 1s ease-out forwards;
-        }
-
-        @keyframes fireworkLaunch {
-            0% { 
-                transform: translateY(100vh) scale(0.5); 
-                opacity: 1; 
-            }
-            70% { 
-                transform: translateY(var(--target-y)) scale(1); 
-                opacity: 1; 
-            }
-            100% { 
-                transform: translateY(var(--target-y)) scale(1); 
-                opacity: 0; 
-            }
-        }
-
-        @keyframes fireworkExplode {
-            0% { 
-                transform: translate(0, 0) scale(1); 
-                opacity: 1; 
-            }
-            100% { 
-                transform: translate(var(--particle-x), var(--particle-y)) scale(0); 
-                opacity: 0; 
-            }
-        }
-
-        /* تحسينات للجوال */
-        @media (max-width: 768px) {
-            .profile-container {
-                width: 95%;
-                max-width: 95%;
-                padding: 25px 20px;
-                margin: 20px auto;
-                margin-top: 60px !important;
-            }
-
-            .avatar {
-                width: 120px;
-                height: 120px;
-            }
-
-            .username {
-                font-size: 1.6em;
-            }
-
-            .discord-tag {
-                font-size: 1.1em;
-            }
-
-            .social-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 1em;
-            }
-
-            .theme-toggle {
-                width: 45px;
-                height: 45px;
-            }
-
-            .device-indicator {
-                top: 80px;
-                left: 20px;
-                font-size: 0.8em;
-                padding: 6px 12px;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .profile-container {
-                max-width: 500px;
-                cursor: grab;
-                margin-top: 0;
-            }
-
-            .profile-container:active {
-                cursor: grabbing;
-            }
-
-            .avatar:hover {
-                transform: scale(1.1) rotateY(10deg);
-            }
-
-            .social-icon:hover {
-                transform: scale(1.2) translateY(-8px) rotateY(10deg);
-            }
-        }
-
-        /* الساعة */
-        .time-container {
-            position: fixed !important;
-            top: 20px !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            width: 140px;
-            height: 45px;
-            background: var(--container-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--container-border);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            z-index: 99999 !important;
-            box-shadow: 0 10px 25px var(--shadow-color);
-            overflow: visible !important;
-            transition: all 0.3s ease;
-            padding: 0 15px;
-        }
-
-        .time-container:hover {
-            transform: translateX(-50%) translateY(-3px) !important;
-            box-shadow: 0 15px 30px var(--shadow-color);
-        }
-
-        .time-icon {
-            color: white;
-            font-size: 1em;
-            animation: pulse 2s infinite;
-        }
-
-        .time-display {
-            font-size: 1.8em !important;
-            font-weight: 900;
-            color: white !important;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-            letter-spacing: 2px;
-            font-family: 'Arial Black', 'Impact', sans-serif;
-            line-height: 1;
-            white-space: nowrap;
-            overflow: visible !important;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        /* القمر والشمس */
-        .moon {
-            position: absolute;
-            top: 10%;
-            right: 10%;
-            width: 80px;
-            height: 80px;
-            background: #f5f5f5;
-            border-radius: 50%;
-            box-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
-            z-index: 2;
-            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        [data-theme="light"] .moon {
-            transform: translateY(150vh);
-            opacity: 0;
-        }
-
-        .moon::after {
-            content: '';
-            position: absolute;
-            top: 20px;
-            left: 15px;
-            width: 20px;
-            height: 20px;
-            background: #e0e0e0;
-            border-radius: 50%;
-        }
-
-        .sun {
-            position: absolute;
-            top: 10%;
-            right: 10%;
-            width: 80px;
-            height: 80px;
-            background: #FFD700;
-            border-radius: 50%;
-            box-shadow: 0 0 60px #FFA500;
-            z-index: 2;
-            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateY(150vh);
-            opacity: 0;
-        }
-
-        [data-theme="light"] .sun {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        /* النجوم */
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            opacity: 1;
-            transition: opacity 0.8s ease;
-        }
-
-        [data-theme="light"] .stars {
-            opacity: 0;
-        }
-
-        .star {
-            position: absolute;
-            background-color: white;
-            border-radius: 50%;
-            animation: twinkle 3s infinite;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0; transform: scale(0.5); }
-            50% { opacity: 1; transform: scale(1); }
-        }
-
-        /* النيازك */
-        .meteor {
-            position: absolute;
-            background: linear-gradient(90deg, white, transparent);
-            height: 2px;
-            animation: meteorFall 2s linear infinite;
-            z-index: 2;
-            opacity: 1;
-            transition: opacity 0.8s ease;
-        }
-
-        [data-theme="light"] .meteor {
-            opacity: 0;
-        }
-
-        @keyframes meteorFall {
-            0% { 
-                transform: translateX(-100px) translateY(-100px) rotate(45deg);
-                opacity: 1;
-                width: 0;
-            }
-            100% { 
-                transform: translateX(500px) translateY(500px) rotate(45deg);
-                opacity: 0;
-                width: 150px;
-            }
-        }
-
-        /* الغيوم */
-        .cloud {
-            position: absolute;
-            z-index: 2;
-            opacity: 0;
-            transition: opacity 0.8s ease;
-        }
-
-        [data-theme="light"] .cloud {
-            opacity: 1;
-        }
-
-        .cloud::before {
-            content: '';
-            position: absolute;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 50%;
-            box-shadow: 
-                0 0 30px rgba(255, 255, 255, 0.8),
-                inset 0 0 20px rgba(255, 255, 255, 0.9);
-        }
-
-        .cloud-1::before {
-            width: 120px;
-            height: 60px;
-            top: 0;
-            left: 0;
-            filter: blur(8px);
-        }
-
-        .cloud-1::after {
-            content: '';
-            position: absolute;
-            background: rgba(255, 255, 255, 0.85);
-            width: 80px;
-            height: 50px;
-            border-radius: 50%;
-            top: -20px;
-            left: 20px;
-            filter: blur(6px);
-        }
-
-        .cloud-2::before {
-            width: 180px;
-            height: 70px;
-            top: 0;
-            left: 0;
-            filter: blur(10px);
-        }
-
-        .cloud-2::after {
-            content: '';
-            position: absolute;
-            background: rgba(255, 255, 255, 0.8);
-            width: 100px;
-            height: 60px;
-            border-radius: 50%;
-            top: -25px;
-            left: 40px;
-            filter: blur(8px);
-        }
-
-        .cloud-3::before {
-            width: 150px;
-            height: 65px;
-            top: 0;
-            left: 0;
-            filter: blur(9px);
-        }
-
-        .cloud-3::after {
-            content: '';
-            position: absolute;
-            background: rgba(255, 255, 255, 0.9);
-            width: 90px;
-            height: 55px;
-            border-radius: 50%;
-            top: -22px;
-            left: 30px;
-            filter: blur(7px);
-        }
-
-        @keyframes cloudMove {
-            0% { transform: translateX(-200px); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateX(1500px); opacity: 0; }
-        }
-
-        /* الكواكب */
-        .planet {
-            position: absolute;
-            border-radius: 50%;
-            animation: planetGlow 4s ease-in-out infinite;
-            z-index: 2;
-            opacity: 1;
-            transition: opacity 0.8s ease;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .planet:hover {
-            transform: scale(1.2);
-        }
-
-        .planet.exploding {
-            animation: planetExplode 0.8s ease-out forwards;
-        }
-
-        [data-theme="light"] .planet {
-            opacity: 0;
-        }
-
-        @keyframes planetGlow {
-            0%, 100% { transform: scale(1); opacity: 0.7; }
-            50% { transform: scale(1.1); opacity: 1; }
-        }
-
-        @keyframes planetExplode {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 0.7; }
-            100% { transform: scale(0); opacity: 0; }
-        }
-
-        /* البروفايل */
-        .profile-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 100;
-            width: 90%;
-            max-width: 450px;
-            background: var(--container-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 25px;
-            padding: 35px;
-            border: 2px solid var(--container-border);
-            box-shadow: 0 25px 50px var(--shadow-color);
-            text-align: center;
-            animation: containerGlow 3s ease-in-out infinite;
-            transition: all 0.8s ease;
-            overflow: hidden;
-        }
-
-        @keyframes containerGlow {
-            0%, 100% { box-shadow: 0 25px 50px var(--shadow-color), 0 0 0px rgba(114, 137, 218, 0.5); }
-            50% { box-shadow: 0 25px 50px var(--shadow-color), 0 0 30px rgba(114, 137, 218, 0.8); }
-        }
-
-        .avatar-section {
-            margin-bottom: 20px;
-        }
-
-        .avatar {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid var(--primary-color);
-            box-shadow: 0 0 35px rgba(114, 137, 218, 0.6);
-            margin: 0 auto 20px auto;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: #1a1a2e;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            object-fit: cover;
-        }
-
-        .avatar-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-
-        .avatar:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 45px rgba(114, 137, 218, 0.8);
-        }
-
-        .info-section {
-            margin-bottom: 25px;
-        }
-
-        .username {
-            font-size: 2em;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: var(--text-color);
-            text-shadow: 0 0 15px rgba(114, 137, 218, 0.9);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-block;
-        }
-
-        .username:hover {
-            text-shadow: 0 0 25px rgba(114, 137, 218, 1);
-            transform: scale(1.05);
-        }
-
-        .discord-tag {
-            color: var(--primary-color);
-            font-size: 1.3em;
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-block;
-        }
-
-        .discord-tag:hover {
-            color: #8ba0ff;
-            text-shadow: 0 0 15px rgba(114, 137, 218, 0.7);
-            transform: scale(1.05);
-        }
-
-        .location {
-            color: var(--text-color);
-            font-size: 1.1em;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-            opacity: 0.9;
-        }
-
-        .age {
-            color: var(--text-color);
-            font-size: 1em;
-            margin-bottom: 15px;
-            opacity: 0.8;
-        }
-
-        .bio {
-            color: var(--text-color);
-            font-size: 1em;
-            line-height: 1.5;
-            margin-bottom: 25px;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
-            opacity: 0.8;
-        }
-
-        .bio-main {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .social-section {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .social-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            font-size: 1.2em;
-            color: var(--text-color);
-            text-decoration: none;
-            position: relative;
-        }
-
-        .social-icon:hover {
-            transform: scale(1.15) translateY(-5px);
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .youtube { background: rgba(255, 0, 0, 0.3) !important; }
-        .instagram { background: rgba(225, 48, 108, 0.3) !important; }
-        .snapchat { background: rgba(255, 252, 0, 0.3) !important; }
-        .twitter { background: rgba(29, 161, 242, 0.3) !important; }
-        .tiktok { background: rgba(0, 0, 0, 0.3) !important; }
-        .discord { background: rgba(114, 137, 218, 0.3) !important; }
-        .spotify { background: rgba(30, 215, 96, 0.3) !important; }
-        .email { background: rgba(66, 133, 244, 0.3) !important; }
-        .fortnite-gg { background: rgba(255, 165, 0, 0.3) !important; }
-        .fortnite { background: rgba(148, 51, 255, 0.3) !important; }
-
-        .fortnite img {
-            width: 50% !important;
-            height: 50% !important;
-            object-fit: contain;
-        }
-
-        .star-rain {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0;
-        }
-
-        .falling-star {
-            position: absolute;
-            background: linear-gradient(45deg, transparent, white, transparent);
-            width: 3px;
-            height: 20px;
-            border-radius: 50%;
-            animation: starFall 1s linear forwards;
-        }
-
-        @keyframes starFall {
-            0% { 
-                transform: translateY(-100px) rotate(45deg);
-                opacity: 1;
-            }
-            100% { 
-                transform: translateY(100vh) rotate(45deg);
-                opacity: 0;
-            }
-        }
-
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            background: var(--container-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--container-border);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px var(--shadow-color);
-        }
-
-        .theme-toggle:hover {
-            transform: scale(1.1);
-        }
-
-        .theme-toggle i {
-            font-size: 1.2em;
-            color: var(--text-color);
-            transition: all 0.3s ease;
-        }
-
-        .explosion-particles {
-            position: absolute;
-            pointer-events: none;
-            z-index: 3;
-        }
-
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            animation: particleFloat 1.5s ease-out forwards;
-        }
-
-        @keyframes particleFloat {
-            0% { 
-                transform: translate(0, 0) scale(1); 
-                opacity: 1; 
-            }
-            100% { 
-                transform: translate(var(--tx), var(--ty)) scale(0); 
-                opacity: 0; 
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>moejafarx | الكون التفاعلي</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪐</text></svg>">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;800&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--p:#7289da;--bg:#070b24;--bg2:#000;--tx:#fff;--cd:rgba(255,255,255,.09);--bd:rgba(255,255,255,.2);--gl:rgba(114,137,218,.45);--sg:transparent}
+[data-t=light]{--bg:#7ec8f5;--bg2:#e8f6ff;--tx:#18324a;--cd:rgba(255,255,255,.55);--bd:rgba(255,255,255,.7);--gl:rgba(255,200,60,.45)}
+body{font-family:'Tajawal','Segoe UI',Tahoma,sans-serif;min-height:100vh;background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--tx);overflow-x:hidden;transition:background .8s}
+#bg{position:fixed;inset:0;z-index:0}
+.moon,.sun{position:fixed;top:11%;right:9%;width:80px;height:80px;border-radius:50%;z-index:1;transition:all 1.2s cubic-bezier(.4,0,.2,1)}
+.moon{background:#f4f4f4;box-shadow:0 0 50px rgba(255,255,255,.4)}
+.moon::after{content:"";position:absolute;top:20px;left:15px;width:20px;height:20px;background:#e0e0e0;border-radius:50%}
+.sun{background:#ffd700;box-shadow:0 0 70px #ffa500;transform:translateY(150vh);opacity:0}
+[data-t=light] .moon{transform:translateY(150vh);opacity:0}
+[data-t=light] .sun{transform:none;opacity:1}
+.horror .moon{background:#b30000;box-shadow:0 0 100px #ff1a1a;width:115px;height:115px}
+.horror .moon::after{background:#8a0000}
+main{position:relative;z-index:10;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:84px 14px 80px}
+.card{width:100%;max-width:470px;background:var(--cd);border:1px solid var(--bd);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-radius:30px;padding:34px 20px 24px;text-align:center;position:relative;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.45),0 0 40px var(--gl);transition:transform .15s;animation:rise .9s both,pulse 4s ease-in-out infinite}
+@keyframes rise{from{opacity:0;transform:translateY(40px) scale(.95)}}
+@keyframes pulse{50%{box-shadow:0 30px 70px rgba(0,0,0,.45),0 0 70px var(--gl)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes flow{to{background-position:300% 0}}
+.av{width:140px;height:140px;margin:0 auto 14px;border-radius:50%;padding:4px;background:conic-gradient(var(--p),#ff5ca8,#38d6ff,var(--p));animation:spin 6s linear infinite;cursor:pointer}
+.av>div{width:100%;height:100%;border-radius:50%;background:#14142b;display:grid;place-items:center;overflow:hidden;animation:spin 6s linear infinite reverse;font-size:54px;font-weight:800;color:#fff}
+.av img{width:100%;height:100%;object-fit:cover}
+.nm{font-size:2.2em;font-weight:800;background:linear-gradient(90deg,var(--p),#ff5ca8,#38d6ff,var(--p));background-size:300%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 5s linear infinite;cursor:pointer;display:inline-block}
+.nm.rb{background-image:linear-gradient(90deg,red,orange,yellow,lime,cyan,violet,red);animation-duration:.8s}
+.horror .nm{animation:flow 5s linear infinite,glitch 2.6s infinite}
+@keyframes glitch{0%,90%,100%{transform:none;filter:none}92%{transform:translate(-4px,2px) skewX(10deg);filter:drop-shadow(3px 0 red)}95%{transform:translate(4px,-2px);filter:drop-shadow(-3px 0 cyan)}}
+.tag{color:var(--p);cursor:pointer;margin:2px 0 8px;font-size:1.15em;font-weight:800}
+.meta{opacity:.85;font-size:.95em;margin-bottom:4px}
+.bio{min-height:30px;font-weight:800;margin:10px 0 20px}
+.bio::after{content:"|";animation:bk 1s steps(1) infinite}
+@keyframes bk{50%{opacity:0}}
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:10px}
+.lk{--c:#fff;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px;border-radius:18px;background:color-mix(in srgb,var(--c) 16%,transparent);border:1px solid color-mix(in srgb,var(--c) 45%,transparent);color:var(--tx);text-decoration:none;font-size:.82em;font-weight:800;transition:transform .25s,box-shadow .25s;opacity:0;animation:up .6s forwards}
+.lk i{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;font-size:1.5em;font-style:normal;color:var(--c);background:color-mix(in srgb,var(--c) 28%,transparent);border:1px solid color-mix(in srgb,var(--c) 40%,transparent)}
+.lk:hover{transform:translateY(-6px) scale(1.06);box-shadow:0 12px 28px color-mix(in srgb,var(--c) 55%,transparent)}
+@keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1}}
+.ctl{position:fixed;top:14px;z-index:60;width:46px;height:46px;border-radius:50%;background:var(--cd);border:1px solid var(--bd);backdrop-filter:blur(10px);color:var(--tx);display:grid;place-items:center;cursor:pointer;font-size:1.1em}
+#tg{right:14px}#sd{left:14px}#fl{left:68px;display:none;width:auto;padding:0 16px;border-radius:23px;gap:6px;font-weight:800;font-size:.9em;grid-auto-flow:column}
+#cd{font-weight:800;color:var(--p);font-variant-numeric:tabular-nums}.horror #fl{display:grid}
+@media(hover:none),(max-width:700px){#fl{display:none!important}}
+.clock{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:60;padding:10px 18px;border-radius:14px;background:var(--cd);border:1px solid var(--bd);backdrop-filter:blur(12px);font:900 1.25em 'Arial Black',sans-serif;letter-spacing:2px;direction:ltr}
+.pl{position:fixed;border-radius:50%;z-index:2;cursor:pointer;animation:fl 7s ease-in-out infinite;box-shadow:0 0 30px currentColor;transition:opacity .4s,transform .4s}
+.pl.x{opacity:0;transform:scale(0)}
+[data-t=light] .pl{opacity:0;pointer-events:none}
+@keyframes fl{50%{transform:translateY(-16px)}}
+.bp{position:fixed;width:7px;height:7px;border-radius:50%;pointer-events:none;z-index:90;animation:bp .9s ease-out forwards}
+@keyframes bp{to{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0}}
+.cg{position:fixed;width:260px;height:260px;margin:-130px;border-radius:50%;background:radial-gradient(circle,var(--gl),transparent 65%);pointer-events:none;z-index:5;display:none}
+@media(hover:hover){.cg{display:block}}
+.sz{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden}
+.sz>b{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 110%,var(--sg),transparent 60%),radial-gradient(ellipse at 50% -10%,var(--sg),transparent 55%)}
+.sp{position:absolute;will-change:transform}
+.f{top:-10vh;animation:fa linear infinite}.r{bottom:-12vh;animation:ra linear infinite}.y{left:-12vw;animation:ya linear infinite}
+@keyframes fa{to{transform:translate3d(var(--dx),115vh,0) rotate(var(--rt))}}
+@keyframes ra{to{transform:translate3d(var(--dx),-120vh,0) rotate(var(--rt))}}
+@keyframes ya{25%{transform:translate3d(30vw,-4vh,0) scaleY(.7)}50%{transform:translate3d(60vw,3vh,0)}75%{transform:translate3d(90vw,-5vh,0) scaleY(.7)}100%{transform:translate3d(125vw,0,0)}}
+.hg{position:absolute;top:0;width:2px;transform-origin:top;animation:sw ease-in-out infinite alternate}
+.hg::before{content:"";position:absolute;inset:0;background:rgba(255,255,255,.5)}
+.hg span{position:absolute;top:100%;left:50%;transform:translate(-50%,-6px);font-size:30px;line-height:1}
+@keyframes sw{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
+.mn{position:absolute;top:70px;left:6%;font-size:64px;filter:drop-shadow(0 0 25px #f5c542);animation:pu 4s ease-in-out infinite}
+@keyframes pu{50%{transform:scale(1.1) rotate(-6deg)}}
+.lg{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-around}
+.lg i{width:10px;height:14px;border-radius:50%;margin-top:8px;background:currentColor;box-shadow:0 0 12px currentColor;animation:bk2 1.6s ease-in-out infinite}
+@keyframes bk2{50%{opacity:.25}}
+.tt{position:fixed;left:50%;top:74px;transform:translate(-50%,-20px);opacity:0;z-index:100;padding:11px 22px;border-radius:30px;background:var(--cd);border:1px solid var(--p);backdrop-filter:blur(14px);font-weight:800;box-shadow:0 0 25px var(--sg);transition:all .6s;pointer-events:none;white-space:nowrap}
+.tt.on{opacity:1;transform:translate(-50%,0)}
+.fog{position:fixed;left:-20%;right:-20%;bottom:-5%;height:42vh;background:radial-gradient(ellipse,rgba(200,200,225,.2),transparent 65%);filter:blur(25px);animation:fg 16s ease-in-out infinite alternate;z-index:4;pointer-events:none}
+@keyframes fg{to{transform:translateX(12%) scale(1.15)}}
+.eye{position:fixed;width:8px;height:8px;border-radius:50%;background:red;box-shadow:0 0 12px 4px red,26px 0 0 0 red,26px 0 12px 4px red;opacity:0;z-index:4;pointer-events:none;animation:ey 6s infinite}
+@keyframes ey{0%,40%{opacity:0}45%,80%{opacity:1}83%{transform:scaleY(.1)}86%{transform:scaleY(1)}92%,100%{opacity:0}}
+.bl{position:absolute;top:0;width:9px;height:0;background:linear-gradient(#a00000,#5a0000);border-radius:0 0 9px 9px;animation:dr 5s ease-in infinite;z-index:3}
+@keyframes dr{60%{height:var(--h)}to{height:var(--h);opacity:0}}
+.bar{position:absolute;top:0;left:0;right:0;height:8px;background:#7a0000;z-index:3}
+#fx{position:fixed;inset:0;background:#fff;opacity:0;z-index:70;pointer-events:none}
+#fx.z{animation:zp .7s}
+@keyframes zp{10%{opacity:.85}20%{opacity:.1}30%{opacity:.6}to{opacity:0}}
+#lt{position:fixed;inset:0;z-index:55;pointer-events:none;display:none;background:radial-gradient(circle 190px at var(--mx,50%) var(--my,50%),transparent 0,rgba(0,0,0,.4) 55%,rgba(0,0,0,.9) 100%)}
+.dk #lt{display:block}
+.pk{position:fixed;bottom:8px;font-size:54px;z-index:12;cursor:pointer;filter:drop-shadow(0 0 18px #ff7518);animation:pk 2.5s ease-in-out infinite alternate;user-select:none}
+@keyframes pk{to{transform:translateY(-8px) rotate(6deg)}}
+.pk.s{animation:sk .4s}
+@keyframes sk{25%{transform:scale(1.4) rotate(-12deg)}75%{transform:scale(1.4) rotate(12deg)}}
+#jb{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);padding:10px 18px;border-radius:30px;background:#7a0000;color:#fff;border:1px solid red;font:800 .95em 'Tajawal',sans-serif;cursor:pointer;z-index:60;display:none;box-shadow:0 0 20px #f00}
+.horror #jb{display:block}
+#sc{position:fixed;inset:0;z-index:200;background:#000;display:none;place-items:center;font-size:48vmin}
+#sc.on{display:grid;animation:shk .15s infinite}
+@keyframes shk{25%{transform:translate(-14px,8px) scale(1.05)}75%{transform:translate(14px,-8px)}}
+@media(prefers-reduced-motion:reduce){.sp,.hg,.fog,.eye,.pl{animation:none!important}}
+</style>
 </head>
-<body data-theme="dark" data-device="mobile">
-    <!-- مؤشر الجهاز -->
-    <div class="device-indicator" id="deviceIndicator">
-        <span id="deviceIcon">📱</span>
-        <span id="deviceName">جوال</span>
-    </div>
-    
-    <!-- تابع الماوس للديسكتوب -->
-    <div class="mouse-follower" id="mouseFollower"></div>
-    
-    <!-- حاوية ألعاب نارية 🎆 -->
-    <div class="fireworks-container" id="fireworksContainer"></div>
-    
-    <!-- الساعة -->
-    <div class="time-container" id="timeContainer">
-        <i class="fas fa-clock time-icon"></i>
-        <div class="time-display" id="currentTime">00:00</div>
-    </div>
-    
-    <!-- من الكود الأول -->
-    <div class="stars" id="starsContainer"></div>
-    <div class="moon"></div>
-    <div class="sun"></div>
-    <div id="meteorsContainer"></div>
-    <div id="cloudsContainer"></div>
-    <div id="planetsContainer"></div>
-    
-    <div class="star-rain" id="starRain"></div>
-    
-    <div class="theme-toggle" id="themeToggle">
-        <i class="fas fa-moon"></i>
-    </div>
-    
-    <div class="profile-container" id="profileContainer">
-        <div class="avatar-section">
-            <div class="avatar" onclick="openDiscord()">
-                <img src="Tanjiro.jpg" alt="Tanjiro" class="avatar-img">
-            </div>
-        </div>
-        
-        <div class="info-section">
-            <div class="username" id="username" onclick="rainbowEffect()">moejafarx</div>
-            <div class="discord-tag" onclick="openDiscord()">@moejafarx</div>
-            <div class="location">🇸🇦 السعودية 📍</div>
-            <div class="age">العمر: 20 سنة</div>
-            <div class="bio">
-                <div class="bio-main">مطور و مصمم مواقع ✨</div>
-            </div>
-        </div>
-        
-        <div class="social-section">
-            <a href="https://www.youtube.com/@moejafarx" target="_blank" class="social-icon youtube" onclick="createStarRain(event)">
-                <i class="fab fa-youtube"></i>
-            </a>
-            <a href="https://www.instagram.com/moejafarx/" target="_blank" class="social-icon instagram" onclick="createStarRain(event)">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="https://www.snapchat.com/add/moejafarx" target="_blank" class="social-icon snapchat" onclick="createStarRain(event)">
-                <i class="fab fa-snapchat"></i>
-            </a>
-            <a href="https://x.com/moejafarx" target="_blank" class="social-icon twitter" onclick="createStarRain(event)">
-                <i class="fab fa-twitter"></i>
-            </a>
-            <a href="https://www.tiktok.com/@moejafarx" target="_blank" class="social-icon tiktok" onclick="createStarRain(event)">
-                <i class="fab fa-tiktok"></i>
-            </a>
-            <a href="https://open.spotify.com/playlist/53SjuiCGYO52gdRffERzSq" target="_blank" class="social-icon spotify" onclick="createStarRain(event)">
-                <i class="fab fa-spotify"></i>
-            </a>
-            <a href="mailto:gogjdu887@gmail.com" class="social-icon email" onclick="createStarRain(event)">
-                <i class="fas fa-envelope"></i>
-            </a>
-            <a href="#" onclick="openDiscord(); createStarRain(event)" class="social-icon discord">
-                <i class="fab fa-discord"></i>
-            </a>
-            <a href="https://fortnite.gg/creator?name=tnv" target="_blank" class="social-icon fortnite-gg" onclick="createStarRain(event)">
-                <i class="fas fa-smile"></i>
-            </a>
-            <a href="https://www.fortnite.com/@tnv?lang=ar" target="_blank" class="social-icon fortnite" onclick="createStarRain(event)">
-                <img src="https://static-assets-prod.epicgames.com/fortnite/static/favicon.ico" alt="Fortnite">
-            </a>
-        </div>
-    </div>
-
-    <script>
-        // 📱 اكتشاف نوع الجهاز
-        function detectDevice() {
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            const isTablet = /iPad|Android(?!.*Mobile)|Tablet|Silk/i.test(navigator.userAgent);
-            
-            if (isMobile || window.innerWidth <= 768) {
-                return 'mobile';
-            } else if (isTablet) {
-                return 'tablet';
-            } else {
-                return 'desktop';
-            }
-        }
-
-        // 🎮 تطبيق إعدادات الجهاز
-        function applyDeviceSettings() {
-            const deviceType = detectDevice();
-            const body = document.body;
-            const deviceIcon = document.getElementById('deviceIcon');
-            const deviceName = document.getElementById('deviceName');
-            
-            // تعيين سمة الجهاز
-            body.setAttribute('data-device', deviceType);
-            
-            // تحديث المؤشر
-            if (deviceType === 'mobile') {
-                deviceIcon.textContent = '📱';
-                deviceName.textContent = 'جوال';
-            } else if (deviceType === 'tablet') {
-                deviceIcon.textContent = '📟';
-                deviceName.textContent = 'تابلت';
-            } else {
-                deviceIcon.textContent = '💻';
-                deviceName.textContent = 'كمبيوتر';
-            }
-            
-            // تطبيق الإعدادات الخاصة
-            if (deviceType === 'desktop') {
-                initDesktopFeatures();
-            } else {
-                initMobileFeatures();
-            }
-            
-            console.log(`📱 الجهاز المكتشف: ${deviceType}`);
-            console.log(`🖥️ عرض الشاشة: ${window.innerWidth}px`);
-        }
-
-        // 🌪️ تأثير الإعصار عند تمرير الماوس (للديسكتوب فقط)
-        function initDesktopFeatures() {
-            const mouseFollower = document.getElementById('mouseFollower');
-            let lastX = 0, lastY = 0;
-            let velocityX = 0, velocityY = 0;
-            let tornadoActive = false;
-            let tornadoElement = null;
-            let trailElements = [];
-            
-            document.addEventListener('mousemove', (e) => {
-                // تحديث موقع تابع الماوس
-                mouseFollower.style.left = e.clientX + 'px';
-                mouseFollower.style.top = e.clientY + 'px';
-                
-                // حساب السرعة
-                velocityX = e.clientX - lastX;
-                velocityY = e.clientY - lastY;
-                lastX = e.clientX;
-                lastY = e.clientY;
-                
-                // تأثير الإعصار عند السرعة العالية
-                const speed = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
-                
-                if (speed > 30 && !tornadoActive) {
-                    createTornado(e.clientX, e.clientY);
-                    tornadoActive = true;
-                    
-                    setTimeout(() => {
-                        if (tornadoElement) {
-                            tornadoElement.style.opacity = '0';
-                            setTimeout(() => {
-                                if (tornadoElement.parentNode) {
-                                    tornadoElement.remove();
-                                }
-                            }, 500);
-                        }
-                        tornadoActive = false;
-                    }, 800);
-                }
-                
-                // تأثير الذيل
-                createTrail(e.clientX, e.clientY, speed);
-                
-                // تنظيف الذيل القديم
-                setTimeout(() => {
-                    if (trailElements.length > 0) {
-                        const oldTrail = trailElements.shift();
-                        oldTrail.style.opacity = '0';
-                        setTimeout(() => {
-                            if (oldTrail.parentNode) {
-                                oldTrail.remove();
-                            }
-                        }, 300);
-                    }
-                }, 500);
-            });
-            
-            function createTornado(x, y) {
-                tornadoElement = document.createElement('div');
-                tornadoElement.className = 'tornado-effect';
-                tornadoElement.style.left = (x - 50) + 'px';
-                tornadoElement.style.top = (y - 150) + 'px';
-                tornadoElement.style.opacity = '0.7';
-                tornadoElement.style.transform = `rotate(${Math.random() * 360}deg)`;
-                
-                document.body.appendChild(tornadoElement);
-                
-                // تأثير صوتي للإعصار
-                playSound('https://assets.mixkit.co/sfx/preview/mixkit-wind-swoosh-1495.mp3', 0.1);
-                
-                // ازدياد حجم الإعصار
-                setTimeout(() => {
-                    if (tornadoElement) {
-                        tornadoElement.style.transform = `scale(1.5) rotate(${Math.random() * 720}deg)`;
-                    }
-                }, 400);
-            }
-            
-            function createTrail(x, y, speed) {
-                const trail = document.createElement('div');
-                trail.className = 'mouse-trail';
-                trail.style.left = (x - 15) + 'px';
-                trail.style.top = (y - 15) + 'px';
-                trail.style.opacity = '0.3';
-                trail.style.transform = `scale(${Math.min(speed / 50, 2)})`;
-                
-                document.body.appendChild(trail);
-                trailElements.push(trail);
-            }
-            
-            // تأثيرات ثلاثية الأبعاد للبروفايل
-            const profileContainer = document.getElementById('profileContainer');
-            
-            profileContainer.addEventListener('mousemove', (e) => {
-                const xAxis = (e.offsetY / profileContainer.offsetHeight - 0.5) * 10;
-                const yAxis = (e.offsetX / profileContainer.offsetWidth - 0.5) * -10;
-                profileContainer.style.transform = `translate(-50%, -50%) perspective(1000px) rotateX(${xAxis}deg) rotateY(${yAxis}deg)`;
-            });
-            
-            profileContainer.addEventListener('mouseleave', () => {
-                profileContainer.style.transform = 'translate(-50%, -50%)';
-            });
-            
-            // إمكانية السحب
-            let isDragging = false;
-            let startX, startY, initialX, initialY;
-            
-            profileContainer.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                startX = e.clientX;
-                startY = e.clientY;
-                initialX = profileContainer.offsetLeft;
-                initialY = profileContainer.offsetTop;
-                profileContainer.style.cursor = 'grabbing';
-            });
-            
-            document.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                
-                const dx = e.clientX - startX;
-                const dy = e.clientY - startY;
-                
-                profileContainer.style.left = `calc(50% + ${dx}px)`;
-                profileContainer.style.top = `calc(50% + ${dy}px)`;
-                profileContainer.style.transform = 'translate(-50%, -50%)';
-            });
-            
-            document.addEventListener('mouseup', () => {
-                isDragging = false;
-                profileContainer.style.cursor = 'grab';
-                
-                // العودة للمركز بعد ثانية
-                setTimeout(() => {
-                    profileContainer.style.left = '50%';
-                    profileContainer.style.top = '50%';
-                }, 1000);
-            });
-        }
-
-        // 📱 مميزات الموبايل
-        function initMobileFeatures() {
-            // تأثيرات اللمس
-            const profileContainer = document.getElementById('profileContainer');
-            
-            profileContainer.addEventListener('touchstart', () => {
-                profileContainer.style.transform = 'translate(-50%, -50%) scale(0.98)';
-            });
-            
-            profileContainer.addEventListener('touchend', () => {
-                profileContainer.style.transform = 'translate(-50%, -50%) scale(1)';
-            });
-        }
-
-        // 🌈 تأثير قوس قزح عند النقر على الاسم
-        function rainbowEffect() {
-            const username = document.getElementById('username');
-            const originalClass = username.className;
-            
-            // إضافة كلاس قوس قزح
-            username.classList.add('rainbow-text');
-            
-            // صوت سحري
-            playSound('https://assets.mixkit.co/sfx/preview/mixkit-magic-sparkles-300.mp3', 0.4);
-            
-            // تفعيل ألعاب نارية صغيرة
-            createSmallFireworks(username.getBoundingClientRect());
-            
-            // إزالة التأثير بعد 3 ثواني
-            setTimeout(() => {
-                username.classList.remove('rainbow-text');
-                username.className = originalClass;
-            }, 3000);
-        }
-
-        // 🎆 ألعاب نارية عند الوصول للصفحة
-        function createWelcomeFireworks() {
-            const fireworksContainer = document.getElementById('fireworksContainer');
-            fireworksContainer.style.opacity = '1';
-            
-            // 5 ألعاب نارية
-            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'];
-            
-            for (let i = 0; i < 5; i++) {
-                setTimeout(() => {
-                    createFirework(
-                        Math.random() * window.innerWidth * 0.8 + window.innerWidth * 0.1,
-                        Math.random() * window.innerHeight * 0.6 + window.innerHeight * 0.2,
-                        colors[i % colors.length]
-                    );
-                }, i * 500);
-            }
-            
-            // إخفاء الحاوية بعد الانتهاء
-            setTimeout(() => {
-                fireworksContainer.style.opacity = '0';
-                setTimeout(() => {
-                    fireworksContainer.innerHTML = '';
-                }, 1000);
-            }, 3500);
-            
-            // صوت ألعاب نارية
-            playSound('https://assets.mixkit.co/sfx/preview/mixkit-explosion-firework-muzzle-2772.mp3', 0.2);
-        }
-
-        // 🎆 إنشاء لعبة نارية واحدة
-        function createFirework(x, y, color) {
-            const fireworksContainer = document.getElementById('fireworksContainer');
-            
-            // الصاروخ
-            const firework = document.createElement('div');
-            firework.className = 'firework';
-            firework.style.left = x + 'px';
-            firework.style.bottom = '0px';
-            firework.style.background = color;
-            firework.style.setProperty('--target-y', (window.innerHeight - y) + 'px');
-            
-            fireworksContainer.appendChild(firework);
-            
-            // الانفجار بعد وصول الصاروخ
-            setTimeout(() => {
-                createFireworkExplosion(x, y, color);
-                firework.remove();
-            }, 700);
-        }
-
-        // 💥 انفجار لعبة نارية
-        function createFireworkExplosion(x, y, color) {
-            const fireworksContainer = document.getElementById('fireworksContainer');
-            const particleCount = 30;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'firework-particle';
-                particle.style.left = x + 'px';
-                particle.style.top = y + 'px';
-                particle.style.background = color;
-                
-                const angle = Math.random() * Math.PI * 2;
-                const distance = 50 + Math.random() * 100;
-                const particleX = Math.cos(angle) * distance;
-                const particleY = Math.sin(angle) * distance;
-                
-                particle.style.setProperty('--particle-x', particleX + 'px');
-                particle.style.setProperty('--particle-y', particleY + 'px');
-                
-                fireworksContainer.appendChild(particle);
-                
-                // إزالة الجسيمات بعد الانتهاء
-                setTimeout(() => {
-                    particle.remove();
-                }, 1000);
-            }
-        }
-
-        // 🎆 ألعاب نارية صغيرة حول العنصر
-        function createSmallFireworks(rect) {
-            const x = rect.left + rect.width / 2;
-            const y = rect.top + rect.height / 2;
-            const colors = ['#ff6b6b', '#4ecdc4', '#feca57', '#ff9ff3'];
-            
-            for (let i = 0; i < 8; i++) {
-                setTimeout(() => {
-                    const angle = (i * 45) * Math.PI / 180;
-                    const distance = 50;
-                    const fx = x + Math.cos(angle) * distance;
-                    const fy = y + Math.sin(angle) * distance;
-                    
-                    createMiniFirework(fx, fy, colors[i % colors.length]);
-                }, i * 100);
-            }
-        }
-
-        function createMiniFirework(x, y, color) {
-            const fireworksContainer = document.getElementById('fireworksContainer');
-            
-            const particle = document.createElement('div');
-            particle.className = 'firework-particle';
-            particle.style.left = x + 'px';
-            particle.style.top = y + 'px';
-            particle.style.background = color;
-            particle.style.width = '3px';
-            particle.style.height = '3px';
-            particle.style.animationDuration = '0.5s';
-            
-            const angle = Math.random() * Math.PI * 2;
-            const distance = 20 + Math.random() * 30;
-            const particleX = Math.cos(angle) * distance;
-            const particleY = Math.sin(angle) * distance;
-            
-            particle.style.setProperty('--particle-x', particleX + 'px');
-            particle.style.setProperty('--particle-y', particleY + 'px');
-            
-            fireworksContainer.appendChild(particle);
-            
-            setTimeout(() => {
-                particle.remove();
-            }, 500);
-        }
-
-        // باقي الكود يبقى كما هو...
-        // 🔊 الأصوات الناعمة للكواكب فقط
-        const planetSounds = [
-            'https://assets.mixkit.co/sfx/preview/mixkit-bubble-pop-up-1938.mp3',
-            'https://assets.mixkit.co/sfx/preview/mixkit-mouse-click-1006.mp3',
-            'https://assets.mixkit.co/sfx/preview/mixkit-cute-magical-spell-1920.mp3',
-            'https://assets.mixkit.co/sfx/preview/mixkit-cartoon-toy-whistle-400.mp3',
-            'https://assets.mixkit.co/sfx/preview/mixkit-cool-interface-click-tone-2568.mp3',
-            'https://assets.mixkit.co/sfx/preview/mixkit-magic-sparkles-300.mp3'
-        ];
-
-        // 🔊 الأصوات العامة
-        const soundEffects = {
-            click: 'https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3',
-            toggle: 'https://assets.mixkit.co/sfx/preview/mixkit-light-switch-click-1161.mp3'
-        };
-
-        // 🔊 دالة تشغيل الصوت الناعم للكواكب
-        function playPlanetSound() {
-            try {
-                const randomSound = planetSounds[Math.floor(Math.random() * planetSounds.length)];
-                const audio = new Audio(randomSound);
-                audio.volume = 0.3;
-                audio.play().catch(e => console.log('لم يتم تشغيل الصوت:', e));
-            } catch (error) {
-                console.log('خطأ في تشغيل الصوت:', error);
-            }
-        }
-
-        // 🔊 دالة تشغيل الصوت العام
-        function playSound(soundUrl, volume = 0.3) {
-            try {
-                const audio = new Audio(soundUrl);
-                audio.volume = volume;
-                audio.play().catch(e => console.log('لم يتم تشغيل الصوت:', e));
-            } catch (error) {
-                console.log('خطأ في تشغيل الصوت:', error);
-            }
-        }
-
-        // 🌟 إنشاء النجوم
-        function createStars() {
-            const starsContainer = document.getElementById('starsContainer');
-            const starCount = detectDevice() === 'desktop' ? 400 : 200;
-            
-            for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
-                star.classList.add('star');
-                
-                const left = Math.random() * 100;
-                const top = Math.random() * 100;
-                const size = Math.random() * (detectDevice() === 'desktop' ? 4 : 2) + 1;
-                const delay = Math.random() * 5;
-                
-                star.style.left = left + '%';
-                star.style.top = top + '%';
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                star.style.animationDelay = delay + 's';
-                
-                starsContainer.appendChild(star);
-            }
-        }
-
-        // ☄️ إنشاء النيازك
-        function createMeteors() {
-            const meteorsContainer = document.getElementById('meteorsContainer');
-            const meteorCount = detectDevice() === 'desktop' ? 8 : 5;
-            
-            for (let i = 0; i < meteorCount; i++) {
-                const meteor = document.createElement('div');
-                meteor.classList.add('meteor');
-                
-                const top = Math.random() * 50;
-                const delay = Math.random() * 15;
-                const duration = Math.random() * 3 + 2;
-                
-                meteor.style.top = top + '%';
-                meteor.style.animationDelay = delay + 's';
-                meteor.style.animationDuration = duration + 's';
-                
-                meteorsContainer.appendChild(meteor);
-            }
-        }
-
-        // ☁️ إنشاء الغيوم
-        function createClouds() {
-            const cloudsContainer = document.getElementById('cloudsContainer');
-            const cloudCount = detectDevice() === 'desktop' ? 8 : 5;
-            
-            for (let i = 0; i < cloudCount; i++) {
-                const cloud = document.createElement('div');
-                cloud.classList.add('cloud');
-                
-                const cloudType = `cloud-${Math.floor(Math.random() * 3) + 1}`;
-                cloud.classList.add(cloudType);
-                
-                const top = Math.random() * 60 + 10;
-                const delay = Math.random() * 30;
-                const duration = Math.random() * 40 + 30;
-                
-                cloud.style.top = top + '%';
-                cloud.style.animation = `cloudMove ${duration}s linear ${delay}s infinite`;
-                
-                cloudsContainer.appendChild(cloud);
-            }
-        }
-
-        // 🪐 إنشاء الكواكب مع الأصوات الناعمة
-        function createPlanets() {
-            const planetsContainer = document.getElementById('planetsContainer');
-            const planetColors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'];
-            const planetCount = detectDevice() === 'desktop' ? 8 : 4;
-            
-            for (let i = 0; i < planetCount; i++) {
-                const planet = document.createElement('div');
-                planet.classList.add('planet');
-                
-                const left = Math.random() * 80 + 10;
-                const top = Math.random() * 60 + 20;
-                const size = detectDevice() === 'desktop' ? 
-                    (Math.random() * 40 + 30) : 
-                    (Math.random() * 25 + 15);
-                const color = planetColors[i % planetColors.length];
-                const delay = Math.random() * 3;
-                
-                planet.style.left = left + '%';
-                planet.style.top = top + '%';
-                planet.style.width = size + 'px';
-                planet.style.height = size + 'px';
-                planet.style.background = color;
-                planet.style.animationDelay = delay + 's';
-                planet.style.boxShadow = `0 0 30px ${color}`;
-                
-                if (detectDevice() === 'desktop') {
-                    planet.style.boxShadow = `0 0 50px ${color}, inset 0 0 20px rgba(255,255,255,0.2)`;
-                }
-                
-                planet.addEventListener('click', function(e) {
-                    if (this.classList.contains('exploding')) return;
-                    
-                    playPlanetSound();
-                    
-                    this.classList.add('exploding');
-                    createExplosionParticles(e.clientX, e.clientY, this.style.background);
-                    
-                    setTimeout(() => {
-                        this.classList.remove('exploding');
-                        this.style.opacity = '1';
-                        this.style.transform = 'scale(1)';
-                    }, 3000);
-                });
-                
-                planetsContainer.appendChild(planet);
-            }
-        }
-
-        // 💥 إنشاء جزيئات الانفجار
-        function createExplosionParticles(x, y, color) {
-            const particlesContainer = document.createElement('div');
-            particlesContainer.className = 'explosion-particles';
-            document.body.appendChild(particlesContainer);
-            
-            const particleCount = detectDevice() === 'desktop' ? 30 : 15;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.background = color;
-                particle.style.width = (Math.random() * 10 + 5) + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.left = x + 'px';
-                particle.style.top = y + 'px';
-                
-                const angle = Math.random() * Math.PI * 2;
-                const distance = Math.random() * 100 + 50;
-                const tx = Math.cos(angle) * distance;
-                const ty = Math.sin(angle) * distance;
-                
-                particle.style.setProperty('--tx', tx + 'px');
-                particle.style.setProperty('--ty', ty + 'px');
-                
-                particlesContainer.appendChild(particle);
-                
-                setTimeout(() => {
-                    particle.remove();
-                }, 1500);
-            }
-            
-            setTimeout(() => {
-                particlesContainer.remove();
-            }, 1500);
-        }
-
-        // ⭐ تأثير المطر النجمي
-        function createStarRain(event) {
-            const starRain = document.getElementById('starRain');
-            const rect = event.currentTarget.getBoundingClientRect();
-            const x = rect.left + rect.width / 2;
-            
-            const count = detectDevice() === 'desktop' ? 20 : 10;
-            
-            for (let i = 0; i < count; i++) {
-                const star = document.createElement('div');
-                star.classList.add('falling-star');
-                star.style.left = (x + Math.random() * 100 - 50) + 'px';
-                star.style.animationDelay = (Math.random() * 0.5) + 's';
-                starRain.appendChild(star);
-                
-                setTimeout(() => {
-                    star.remove();
-                }, 1000);
-            }
-            
-            starRain.style.opacity = '1';
-            setTimeout(() => {
-                starRain.style.opacity = '0';
-            }, 1000);
-        }
-
-        // 🔊 إضافة أصوات النقر
-        function addClickSounds() {
-            const clickableElements = document.querySelectorAll('a, button, .avatar, .discord-tag, .social-icon');
-            
-            clickableElements.forEach(element => {
-                element.addEventListener('click', () => {
-                    playSound(soundEffects.click, 0.2);
-                });
-            });
-            
-            document.getElementById('themeToggle').addEventListener('click', () => {
-                playSound(soundEffects.toggle, 0.3);
-            });
-        }
-
-        // ⏰ تحديث الساعة
-        function updateTime() {
-            const now = new Date();
-            const options = { 
-                timeZone: 'Asia/Riyadh',
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit'
-            };
-            
-            const timeString = now.toLocaleTimeString('en-US', options);
-            document.getElementById('currentTime').textContent = timeString;
-            setTimeout(updateTime, 60000);
-        }
-
-        // 🔄 نظام الدارك/وايت مود
-        function initTheme() {
-            const themeToggle = document.getElementById('themeToggle');
-            const themeIcon = themeToggle.querySelector('i');
-            const body = document.body;
-            
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (!prefersDark) {
-                body.setAttribute('data-theme', 'light');
-                themeIcon.className = 'fas fa-sun';
-            }
-            
-            themeToggle.addEventListener('click', () => {
-                const isDark = body.getAttribute('data-theme') === 'dark';
-                body.setAttribute('data-theme', isDark ? 'light' : 'dark');
-                themeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-                playToggleSound();
-            });
-        }
-
-        // 🔊 صوت تبديل الثيم
-        function playToggleSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.3);
-            
-            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-            
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.3);
-        }
-
-        // 🎂 حساب العمر
-        function calculateAge() {
-            const birthDate = new Date(2005, 2, 26);
-            const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-            
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-            return age;
-        }
-
-        function updateAge() {
-            const age = calculateAge();
-            document.querySelector('.age').textContent = `العمر: ${age} سنة`;
-        }
-
-        // 💬 فتح ديسكورد
-        function openDiscord() {
-            window.open('https://discord.com/users/860948173827997719', '_blank');
-        }
-
-        // 🚀 تهيئة كلشي عند التحميل
-        window.onload = function() {
-            // ألعاب نارية ترحيبية
-            setTimeout(() => {
-                createWelcomeFireworks();
-            }, 1000);
-            
-            // اكتشاف الجهاز أولاً
-            applyDeviceSettings();
-            
-            // تهيئة الثيم
-            initTheme();
-            
-            // إنشاء العناصر الكونية
-            createStars();
-            createMeteors();
-            createClouds();
-            createPlanets();
-            
-            // تحديث المعلومات
-            updateAge();
-            updateTime();
-            
-            // إضافة الأصوات
-            addClickSounds();
-            
-            // إعادة تحميل عند تغيير الحجم
-            window.addEventListener('resize', applyDeviceSettings);
-            
-            console.log('🚀 الكون التفاعلي جاهز!');
-            console.log('🌪️ تأثير الإعصار: مفعل للديسكتوب');
-            console.log('🌈 قوس قزح: انقر على الاسم');
-            console.log('🎆 ألعاب نارية: ظهرت عند الوصول');
-        };
-   /* ===== مؤثرات المواسم ===== */
-(function () {
-  var THEMES = {
-    halloween: { color: '#ff7518', glow: 'rgba(255,117,24,.38)', msg: '🎃 هالوين مرعب! 👻',
-      fall: ['🎃','🎃','👻','🍬','🕸️'], fly: ['🦇','🦇'], hang: [{e:'🕷️',l:12,len:90},{e:'🕷️',l:82,len:140}] },
-    christmas: { color: '#ff4d5e', glow: 'rgba(255,77,94,.28)', msg: '🎄 كريسمس مجيد! 🎅',
-      fall: ['❄️','❄️','❄️','🎁','⭐'], fly: ['🦌'], lights: true },
-    ramadan: { color: '#f5c542', glow: 'rgba(245,197,66,.30)', msg: '🌙 رمضان كريم ✨',
-      fall: ['⭐','✨','🌟'], fly: [], moon: true,
-      hang: [{e:'🏮',l:8,len:70},{e:'🏮',l:28,len:120},{e:'🏮',l:52,len:60},{e:'🏮',l:74,len:130},{e:'🏮',l:92,len:80}] },
-    eid: { color: '#ff7ac6', glow: 'rgba(255,122,198,.30)', msg: '🎉 عيدكم مبارك وكل عام وأنتم بخير 🌙',
-      rise: ['🎈','🎈','🎈','🎉','🍬'], fall: ['✨','🎊'] },
-    newyear: { color: '#ffd700', glow: 'rgba(255,215,0,.30)', msg: '🎆 سنة جديدة سعيدة! 🥳',
-      fall: ['🎊','🎉','✨','🎆'], rise: ['🎈'] },
-    founding: { color: '#1fa24a', glow: 'rgba(31,162,74,.34)', msg: '🇸🇦 يوم التأسيس مبارك 🌴',
-      fall: ['🌴','🇸🇦','🌿','✨'] },
-    national: { color: '#1fa24a', glow: 'rgba(31,162,74,.34)', msg: '🇸🇦 اليوم الوطني السعودي، عز الوطن 💚',
-      fall: ['🇸🇦','🌴','💚','🦅','✨'], rise: ['🎈'] }
-  };
-
-  function hijri(date) {
-    try {
-      var o = {};
-      new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'numeric' })
-        .formatToParts(date).forEach(function (p) { o[p.type] = parseInt(p.value, 10); });
-      return { m: o.month, d: o.day };
-    } catch (e) { return { m: 0, d: 0 }; }
-  }
-
-  function pick() {
-    var h = (location.hash || '').replace('#', '');
-    if (THEMES[h]) return h;
-    var now = new Date(), hj = hijri(now), m = now.getMonth() + 1, d = now.getDate();
-    if (hj.m === 9) return 'ramadan';
-    if ((hj.m === 10 && hj.d <= 4) || (hj.m === 12 && hj.d >= 10 && hj.d <= 13)) return 'eid';
-    if (m === 1 && d <= 7) return 'newyear';
-    if (m === 2 && d >= 20 && d <= 23) return 'founding';
-    if (m === 9 && d >= 20 && d <= 24) return 'national';
-    if (m === 10) return 'halloween';
-    if (m === 12) return 'christmas';
-    return null;
-  }
-
-  var css = '.sz-layer{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden}' +
-    '.sz-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 110%,var(--sz-glow),transparent 60%),radial-gradient(ellipse at 50% -10%,var(--sz-glow),transparent 55%)}' +
-    '.sz-p{position:absolute;will-change:transform;user-select:none}' +
-    '.sz-fall{top:-10vh;animation:szFall linear infinite}' +
-    '.sz-rise{bottom:-12vh;animation:szRise linear infinite}' +
-    '.sz-fly{left:-12vw;animation:szFly linear infinite}' +
-    '@keyframes szFall{to{transform:translate3d(var(--dx),115vh,0) rotate(var(--rot))}}' +
-    '@keyframes szRise{to{transform:translate3d(var(--dx),-120vh,0) rotate(var(--rot))}}' +
-    '@keyframes szFly{0%{transform:translate3d(0,0,0) scaleY(1)}25%{transform:translate3d(30vw,-4vh,0) scaleY(.7)}50%{transform:translate3d(60vw,3vh,0) scaleY(1)}75%{transform:translate3d(90vw,-5vh,0) scaleY(.7)}100%{transform:translate3d(125vw,0,0) scaleY(1)}}' +
-    '.sz-hang{position:absolute;top:0;width:2px;transform-origin:top center;animation:szSwing ease-in-out infinite alternate}' +
-    '.sz-hang::before{content:"";position:absolute;top:0;left:0;width:1px;height:100%;background:rgba(255,255,255,.55)}' +
-    '.sz-hang span{position:absolute;top:100%;left:50%;transform:translate(-50%,-6px);font-size:30px;line-height:1}' +
-    '@keyframes szSwing{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}' +
-    '.sz-moon{position:absolute;top:70px;left:6%;font-size:64px;filter:drop-shadow(0 0 25px rgba(245,197,66,.8));animation:szPulse 4s ease-in-out infinite}' +
-    '@keyframes szPulse{50%{transform:scale(1.1) rotate(-6deg)}}' +
-    '.sz-lights{position:absolute;top:0;left:0;right:0;height:26px;display:flex;justify-content:space-around}' +
-    '.sz-lights i{width:10px;height:14px;border-radius:50%;margin-top:8px;animation:szBlink 1.6s ease-in-out infinite;box-shadow:0 0 12px currentColor;background:currentColor}' +
-    '@keyframes szBlink{50%{opacity:.25}}' +
-    '.sz-toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,40px);opacity:0;z-index:100000;padding:12px 22px;border-radius:30px;background:var(--container-bg,rgba(255,255,255,.12));border:1px solid var(--sz-color);backdrop-filter:blur(14px);color:var(--text-color,#fff);font-weight:700;box-shadow:0 0 25px var(--sz-glow);transition:all .6s;pointer-events:none;white-space:nowrap}' +
-    '.sz-toast.on{opacity:1;transform:translate(-50%,0)}' +
-    '@media (prefers-reduced-motion:reduce){.sz-p,.sz-hang,.sz-moon,.sz-lights i{animation:none!important}}';
-
-  function rnd(a, b) { return a + Math.random() * (b - a); }
-  function any(a) { return a[Math.floor(Math.random() * a.length)]; }
-
-  function particle(layer, cls, emoji, dur) {
-    var s = document.createElement('span');
-    s.className = 'sz-p ' + cls;
-    s.textContent = emoji;
-    s.style.left = rnd(0, 100) + '%';
-    s.style.fontSize = rnd(16, 38) + 'px';
-    s.style.opacity = rnd(.65, 1);
-    s.style.animationDuration = dur + 's';
-    s.style.animationDelay = (-rnd(0, dur)) + 's';
-    s.style.setProperty('--dx', rnd(-18, 18) + 'vw');
-    s.style.setProperty('--rot', rnd(-360, 360) + 'deg');
-    layer.appendChild(s);
-    return s;
-  }
-
-  function build(name) {
-    var o = document.querySelector('.sz-layer'); if (o) o.remove();
-    var ot = document.querySelector('.sz-toast'); if (ot) ot.remove();
-    if (!name) { document.documentElement.style.removeProperty('--primary-color'); return; }
-    var t = THEMES[name], small = window.innerWidth < 768, n = small ? 14 : 30, i;
-    var root = document.documentElement.style;
-    root.setProperty('--primary-color', t.color);
-    root.setProperty('--sz-glow', t.glow);
-    root.setProperty('--sz-color', t.color);
-
-    var layer = document.createElement('div');
-    layer.className = 'sz-layer';
-    layer.innerHTML = '<div class="sz-glow"></div>';
-
-    if (t.fall) for (i = 0; i < n; i++) particle(layer, 'sz-fall', any(t.fall), rnd(9, 20));
-    if (t.rise) for (i = 0; i < Math.round(n / 2); i++) particle(layer, 'sz-rise', any(t.rise), rnd(10, 22));
-    if (t.fly && t.fly.length) for (i = 0; i < (small ? 3 : 5); i++) {
-      particle(layer, 'sz-fly', any(t.fly), rnd(12, 24)).style.top = rnd(8, 60) + '%';
-    }
-    if (t.hang) t.hang.forEach(function (h) {
-      var el = document.createElement('div');
-      el.className = 'sz-hang';
-      el.style.left = h.l + '%';
-      el.style.height = h.len + 'px';
-      el.style.animationDuration = rnd(2.4, 4) + 's';
-      el.style.animationDelay = (-rnd(0, 3)) + 's';
-      el.innerHTML = '<span>' + h.e + '</span>';
-      layer.appendChild(el);
-    });
-    if (t.moon) { var mo = document.createElement('div'); mo.className = 'sz-moon'; mo.textContent = '🌙'; layer.appendChild(mo); }
-    if (t.lights) {
-      var L = document.createElement('div'), cols = ['#ff4d5e','#ffd54d','#4dff88','#4db8ff'], k, c = small ? 12 : 26;
-      L.className = 'sz-lights';
-      for (k = 0; k < c; k++) L.innerHTML += '<i style="color:' + cols[k % 4] + ';animation-delay:' + (-k * .15) + 's"></i>';
-      layer.appendChild(L);
-    }
-    document.body.appendChild(layer);
-
-    var toast = document.createElement('div');
-    toast.className = 'sz-toast';
-    toast.textContent = t.msg;
-    document.body.appendChild(toast);
-    setTimeout(function () { toast.classList.add('on'); }, 800);
-    setTimeout(function () { toast.classList.remove('on'); }, 5200);
-  }
-
-  var st = document.createElement('style');
-  st.textContent = css;
-  document.head.appendChild(st);
-
-  function init() { build(pick()); }
-  if (document.readyState === 'complete') init(); else window.addEventListener('load', init);
-  window.addEventListener('hashchange', init);
-})();
-/* ===== نهاية مؤثرات المواسم ===== */
-    </script>
+<body data-t="dark">
+<canvas id="bg"></canvas><div class="moon"></div><div class="sun"></div><div class="cg" id="cg"></div>
+<div class="clock" id="ck">00:00</div>
+<div class="ctl" id="tg" title="ليل / نهار"><i class="fas fa-moon"></i></div>
+<div class="ctl" id="sd" title="الصوت"><i class="fas fa-volume-high"></i></div>
+<div class="ctl" id="fl" title="تشغيل / إطفاء النور">💡 <span id="fls">شغّل النور</span></div>
+<div id="fx"></div><div id="lt"></div><div id="sc">💀</div>
+<button id="jb">👁️ تجرأ واضغط</button>
+<main>
+<section class="card" id="card">
+  <div class="av" id="av"><div><img src="Tanjiro.jpg" alt="moejafarx" onerror="this.remove();this.parentNode.textContent='M'"></div></div>
+  <h1 class="nm" id="nm">moejafarx</h1>
+  <div class="tag" id="tag">@moejafarx</div>
+  <div class="meta">🇸🇦 السعودية 📍</div>
+  <div class="meta" id="cd"></div>
+  <div class="meta" id="age">العمر: 20 سنة</div>
+  <div class="bio" id="bio"></div>
+  <nav class="links">
+    <a class="lk" style="--c:#ff0033" href="https://www.youtube.com/@moejafarx" target="_blank" rel="noopener"><i class="fab fa-youtube" data-e="▶️"></i>يوتيوب</a>
+    <a class="lk" style="--c:#e1306c" href="https://www.instagram.com/moejafarx/" target="_blank" rel="noopener"><i class="fab fa-instagram" data-e="📸"></i>انستقرام</a>
+    <a class="lk" style="--c:#fffc00" href="https://www.snapchat.com/add/moejafarx" target="_blank" rel="noopener"><i class="fab fa-snapchat" data-e="👻"></i>سناب</a>
+    <a class="lk" style="--c:#1da1f2" href="https://x.com/moejafarx" target="_blank" rel="noopener"><i class="fab fa-twitter" data-e="🐦"></i>إكس</a>
+    <a class="lk" style="--c:#25f4ee" href="https://www.tiktok.com/@moejafarx" target="_blank" rel="noopener"><i class="fab fa-tiktok" data-e="🎵"></i>تيك توك</a>
+    <a class="lk" style="--c:#1ed760" href="https://open.spotify.com/playlist/53SjuiCGYO52gdRffERzSq" target="_blank" rel="noopener"><i class="fab fa-spotify" data-e="🎧"></i>سبوتيفاي</a>
+    <a class="lk" style="--c:#7289da" href="https://discord.com/users/860948173827997719" target="_blank" rel="noopener"><i class="fab fa-discord" data-e="💬"></i>ديسكورد</a>
+    <a class="lk" style="--c:#ea4335" href="mailto:gogjdu887@gmail.com"><i class="fas fa-envelope" data-e="✉️"></i>إيميل</a>
+    <a class="lk" style="--c:#ffa500" href="https://fortnite.gg/creator?name=tnv" target="_blank" rel="noopener"><i class="fas fa-smile" data-e="😄"></i>Fortnite.gg</a>
+    <a class="lk" style="--c:#9433ff" href="https://www.fortnite.com/@tnv?lang=ar" target="_blank" rel="noopener"><i data-e="⚡"><img src="https://static-assets-prod.epicgames.com/fortnite/static/favicon.ico" alt="" style="width:50%;height:50%;object-fit:contain" onerror="this.parentNode.textContent='⚡'"></i>فورتنايت</a>
+  </nav>
+</section>
+</main>
+<script>
+const $=s=>document.querySelector(s),B=document.body,R=(a,b)=>a+Math.random()*(b-a),A=a=>a[Math.random()*a.length|0],RM=matchMedia('(prefers-reduced-motion:reduce)').matches,SM=innerWidth<768;
+/* الصوت (مصنوع بالكود بدون ملفات) */
+let AC,mute=false,amb=null;
+function ac(){if(!AC)try{AC=new(window.AudioContext||webkitAudioContext)()}catch(e){}if(AC&&AC.state=='suspended')AC.resume();return AC}
+function tone(f,g,d,ty,v){if(mute)return;const c=ac();if(!c)return;const o=c.createOscillator(),n=c.createGain(),t=c.currentTime;o.type=ty||'sine';o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(g,t+d);n.gain.setValueAtTime(v||.12,t);n.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(n);n.connect(c.destination);o.start();o.stop(t+d)}
+function noise(d,f,v,lp){const c=ac();if(!c)return;const b=c.createBuffer(1,c.sampleRate*d,c.sampleRate),x=b.getChannelData(0);for(let i=0;i<x.length;i++)x[i]=Math.random()*2-1;const s=c.createBufferSource(),fl=c.createBiquadFilter(),g=c.createGain();s.buffer=b;s.loop=!!lp;fl.type='lowpass';fl.frequency.value=f;g.gain.value=v;s.connect(fl);fl.connect(g);g.connect(c.destination);s.start();return{s,g}}
+const thunder=()=>{if(mute)return;const n=noise(3,160,.9);if(n)n.g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+3)};
+const creak=()=>tone(95,55,.9,'sawtooth',.05),screech=()=>{tone(2400,3800,.25,'square',.04);tone(2000,3000,.3,'square',.03)},growl=()=>tone(85,38,.7,'sawtooth',.2),tick=()=>tone(700,1000,.08,'sine',.08);
+function ambient(){if(amb||mute||!B.classList.contains('horror'))return;const c=ac();if(!c)return;const w=noise(4,450,.07,true),o=[55,58.3].map(f=>{const x=c.createOscillator(),g=c.createGain();x.type='sawtooth';x.frequency.value=f;g.gain.value=.022;x.connect(g);g.connect(c.destination);x.start();return x});amb={w,o}}
+function stopAmb(){if(!amb)return;try{amb.w.s.stop();amb.o.forEach(x=>x.stop())}catch(e){}amb=null}
+/* انفجار جزيئات */
+function burst(x,y,cols,n){for(let i=0;i<(n||18);i++){const d=document.createElement('i'),a=R(0,6.28),r=R(40,120);d.className='bp';d.style.cssText=`left:${x}px;top:${y}px;background:${A(cols)};--tx:${Math.cos(a)*r}px;--ty:${Math.sin(a)*r}px`;document.body.appendChild(d);setTimeout(()=>d.remove(),900)}}
+const RC=['#ff5ca8','#38d6ff','#ffd54d','#7c5cff','#4dff88'];
+/* الخلفية: نجوم ونيازك وغيوم */
+const cv=$('#bg'),cx=cv.getContext('2d');let W,H,S=[],M=[],C=[],NR=0,MT=0;
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;S=Array.from({length:SM?110:240},()=>({x:R(0,W),y:R(0,H),r:R(.4,1.8),p:R(0,6)}));C=Array.from({length:6},()=>({x:R(0,W),y:R(40,H*.6),s:R(.6,1.4),v:R(.1,.35)}))}
+rs();addEventListener('resize',rs);
+function draw(t){cx.clearRect(0,0,W,H);if(B.dataset.t=='light'){cx.fillStyle='rgba(255,255,255,.88)';C.forEach(c=>{c.x+=c.v;if(c.x>W+150)c.x=-150;[0,40,80].forEach((o,i)=>{cx.beginPath();cx.arc(c.x+o*c.s,c.y-(i==1?18:0)*c.s,(30+(i==1?10:0))*c.s,0,6.3);cx.fill()})})}else{S.forEach(s=>{cx.globalAlpha=.4+.6*Math.abs(Math.sin(t/900+s.p));cx.fillStyle='#fff';cx.beginPath();cx.arc(s.x,s.y,s.r,0,6.3);cx.fill()});cx.globalAlpha=1;if(!RM&&Math.random()<(MT?.08:.01))M.push({x:R(0,W),y:R(0,H/2),v:R(8,13),l:R(60,130)});M=M.filter(m=>{const g=cx.createLinearGradient(m.x,m.y,m.x-m.l,m.y-m.l);g.addColorStop(0,'#fff');g.addColorStop(1,'transparent');cx.strokeStyle=g;cx.lineWidth=2;cx.beginPath();cx.moveTo(m.x,m.y);cx.lineTo(m.x-m.l,m.y-m.l);cx.stroke();m.x+=m.v;m.y+=m.v;return m.x<W+100&&m.y<H+100})}requestAnimationFrame(draw)}
+requestAnimationFrame(draw);
+/* الكواكب */
+['#ff6b6b','#4ecdc4','#45b7d1','#feca57','#ff9ff3','#96ceb4'].slice(0,SM?4:6).forEach(c=>{const p=document.createElement('div'),z=R(SM?22:32,SM?42:70);p.className='pl';p.style.cssText=`width:${z}px;height:${z}px;left:${R(3,88)}%;top:${R(14,82)}%;color:${c};background:radial-gradient(circle at 30% 30%,#fff9,${c} 60%);animation-delay:${-R(0,6)}s`;p.onclick=e=>{if(p.classList.contains('x'))return;p.classList.add('x');burst(e.clientX,e.clientY,[c,'#fff'],24);tone(500,1400,.25,'triangle',.12);setTimeout(()=>p.classList.remove('x'),3000)};document.body.appendChild(p)});
+/* ثيم ليل/نهار */
+$('#tg').onclick=()=>{const d=B.dataset.t=='dark';B.dataset.t=d?'light':'dark';$('#tg i').className=d?'fas fa-sun':'fas fa-moon';tone(800,400,.3,'sine',.1)};
+if(matchMedia('(prefers-color-scheme:light)').matches)$('#tg').click();
+$('#sd').onclick=()=>{mute=!mute;$('#sd i').className=mute?'fas fa-volume-xmark':'fas fa-volume-high';mute?stopAmb():ambient()};
+/* الساعة والعمر والكتابة */
+let NX=null;
+function nextOcc(){const n=new Date(),s=new Date(n.getFullYear(),n.getMonth(),n.getDate()),c=[];[[1,1,'رأس السنة 🎆'],[2,22,'يوم التأسيس 🇸🇦'],[9,23,'اليوم الوطني 🇸🇦'],[10,31,'هالوين 🎃'],[12,25,'الكريسمس 🎄']].forEach(([m,d,t])=>{let x=new Date(n.getFullYear(),m-1,d);if(x<s)x=new Date(n.getFullYear()+1,m-1,d);c.push({t,x})});for(let i=0;i<400;i++){const x=new Date(s.getFullYear(),s.getMonth(),s.getDate()+i),k=hj(x),t=k.m==9&&k.d==1?'رمضان 🌙':k.m==10&&k.d==1?'عيد الفطر 🎉':k.m==12&&k.d==10?'عيد الأضحى 🐑':null;if(t)c.push({t,x})}return c.sort((a,b)=>a.x-b.x)[0]}
+function cdn(){const n=new Date();if(!NX||n-NX.x>864e5)NX=nextOcc();const d=NX.x-n;if(d<=0){$('#cd').textContent='🎉 اليوم: '+NX.t;return}const z=v=>String(v).padStart(2,'0');$('#cd').textContent='⏳ '+NX.t+' بعد '+Math.floor(d/864e5)+' يوم '+z(Math.floor(d/36e5)%24)+':'+z(Math.floor(d/6e4)%60)+':'+z(Math.floor(d/1e3)%60)}
+const clk=()=>{$('#ck').textContent=new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Riyadh',hour:'2-digit',minute:'2-digit',second:'2-digit'});cdn()};clk();setInterval(clk,1000);
+{const b=new Date(2005,2,26),n=new Date();let a=n.getFullYear()-b.getFullYear();if(n.getMonth()<b.getMonth()||(n.getMonth()==b.getMonth()&&n.getDate()<b.getDate()))a--;$('#age').textContent='العمر: '+a+' سنة'}
+{const P=['مطور و مصمم مواقع ✨','صانع محتوى 🎮','أبدع بلا حدود 🚀'];let i=0,j=0,del=0;(function t(){const s=P[i];$('#bio').textContent=s.slice(0,j);if(!del&&j==s.length){del=1;return setTimeout(t,1800)}if(del&&j==0){del=0;i=(i+1)%P.length}j+=del?-1:1;setTimeout(t,del?40:90)})()}
+document.querySelectorAll('.lk').forEach((a,i)=>{a.style.animationDelay=.4+i*.07+'s';a.addEventListener('click',()=>{const r=a.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,RC,14);tick()})});
+$('#av').onclick=e=>{burst(e.clientX,e.clientY,RC,30);tone(520,1040,.3,'triangle',.12)};
+$('#nm').onclick=e=>{const n=$('#nm');n.classList.add('rb');burst(e.clientX,e.clientY,RC,30);tone(400,1200,.5,'triangle',.1);setTimeout(()=>n.classList.remove('rb'),3000)};
+$('#tag').onclick=()=>window.open('https://discord.com/users/860948173827997719','_blank');
+/* الماوس: توهج وميلان ثلاثي الأبعاد وكشاف */
+if(matchMedia('(hover:hover)').matches){const cd=$('#card'),cg=$('#cg');addEventListener('mousemove',e=>{cg.style.left=e.clientX+'px';cg.style.top=e.clientY+'px';document.documentElement.style.setProperty('--mx',e.clientX+'px');document.documentElement.style.setProperty('--my',e.clientY+'px')});cd.addEventListener('mousemove',e=>{const r=cd.getBoundingClientRect();cd.style.transform=`perspective(900px) rotateX(${(.5-(e.clientY-r.top)/r.height)*9}deg) rotateY(${((e.clientX-r.left)/r.width-.5)*9}deg)`});cd.addEventListener('mouseleave',()=>cd.style.transform='')}
+$('#fl').onclick=()=>{const on=B.classList.toggle('dk');$('#fls').textContent=on?'شغّل النور':'أطفئ النور';const f=$('#fx');f.classList.remove('z');void f.offsetWidth;if(!on&&!RM)f.classList.add('z');tone(on?300:900,on?150:1400,.25,'square',.06)};
+/* المواسم */
+const T={
+halloween:{c:'#ff7518',g:'rgba(255,117,24,.38)',m:'🎃 هالوين مرعب! 👻',f:['🎃','🎃','👻','🍬','🕸️'],y:['🦇','🦇'],h:[{e:'🕷️',l:12,n:90},{e:'🕷️',l:82,n:140}]},
+christmas:{c:'#ff4d5e',g:'rgba(255,77,94,.28)',m:'🎄 كريسمس مجيد! 🎅',f:['❄️','❄️','❄️','🎁','⭐'],y:['🦌'],lg:1},
+ramadan:{c:'#f5c542',g:'rgba(245,197,66,.3)',m:'🌙 رمضان كريم ✨',f:['⭐','✨','🌟'],mn:1,h:[8,28,52,74,92].map((l,i)=>({e:'🏮',l,n:[70,120,60,130,80][i]}))},
+eid:{c:'#ff7ac6',g:'rgba(255,122,198,.3)',m:'🎉 عيدكم مبارك وكل عام وأنتم بخير 🌙',r:['🎈','🎈','🎈','🎉','🍬'],f:['✨','🎊']},
+newyear:{c:'#ffd700',g:'rgba(255,215,0,.3)',m:'🎆 سنة جديدة سعيدة! 🥳',f:['🎊','🎉','✨','🎆'],r:['🎈']},
+founding:{c:'#1fa24a',g:'rgba(31,162,74,.34)',m:'🇸🇦 يوم التأسيس مبارك 🌴',f:['🌴','🇸🇦','🌿','✨']},
+national:{c:'#1fa24a',g:'rgba(31,162,74,.34)',m:'🇸🇦 اليوم الوطني السعودي، عز الوطن 💚',f:['🇸🇦','🌴','💚','🦅','✨'],r:['🎈']},
+winter:{c:'#8fd3ff',g:'rgba(143,211,255,.3)',m:'☃️ شتاء دافئ ☕',f:['❄️','❄️','☃️','☕','🧣'],sp:[12,22]},
+rain:{c:'#5aa9ff',g:'rgba(90,169,255,.32)',m:'🌧️ أجواء ممطرة ☔',f:['💧','💧','💧','☔'],sp:[1.8,3.6],q:2,nr:1},
+spring:{c:'#ff8fb8',g:'rgba(255,143,184,.3)',m:'🌸 أهلاً بالربيع 🦋',f:['🌸','🌷','🌸','🦋'],y:['🦋','🐝'],sp:[10,20]},
+bloom:{c:'#ffc233',g:'rgba(255,194,51,.3)',m:'🌻 الدنيا أزهرت 🐝',f:['🌼','🌻','🌼','🍃'],y:['🐝','🦋','🐝'],sp:[10,20]},
+roses:{c:'#ff4d6d',g:'rgba(255,77,109,.3)',m:'🌹 مايو الورد 🍃',f:['🌹','🌺','🍃','🌹'],sp:[10,20]},
+summer:{c:'#ffb02e',g:'rgba(255,176,46,.35)',m:'☀️ أهلاً بالصيف 🍉',f:['🍉','🍦','🕶️','🏖️','☀️'],sp:[10,18]},
+ocean:{c:'#2bc4ff',g:'rgba(43,196,255,.38)',m:'🌊 أجواء البحر 🐠',r:['🫧','🫧','🐠','🐚','🐬','🫧'],y:['🐟'],sp:[8,16]},
+perseid:{c:'#b69cff',g:'rgba(182,156,255,.3)',m:'☄️ ليالي النيازك، تمنَّ أمنية ✨',f:['☄️','✨','💫'],mt:1,sp:[3,6]},
+school:{c:'#4da3ff',g:'rgba(77,163,255,.3)',m:'🎒 عودة للدراسة 📚',f:['📚','✏️','🎒','🍎','🔔'],sp:[10,20]},
+autumn:{c:'#ff8c2e',g:'rgba(255,140,46,.32)',m:'🍂 خريف دافئ 🍁',f:['🍂','🍁','🍂','🍄','🍃'],sp:[8,16]}};
+function hj(d){try{const o={};(hj.f=hj.f||new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn',{day:'numeric',month:'numeric'})).formatToParts(d).forEach(p=>o[p.type]=+p.value);return{m:o.month,d:o.day}}catch(e){return{m:0,d:0}}}
+function pick(){const h=location.hash.slice(1);if(T[h])return h;const n=new Date(),k=hj(n),m=n.getMonth()+1,d=n.getDate();if(k.m==9)return'ramadan';if((k.m==10&&k.d<=4)||(k.m==12&&k.d>=10&&k.d<=13))return'eid';if((m==1&&d<=7)||(m==12&&d==31))return'newyear';if(m==2&&d>=20&&d<=23)return'founding';if(m==9&&d>=20&&d<=24)return'national';return['winter','rain','spring','bloom','roses','summer','ocean','perseid','school','halloween','autumn','christmas'][m-1]}
+function sp(L,cl,e,du){const s=document.createElement('span');s.className='sp '+cl;s.textContent=e;s.style.cssText=`left:${R(0,100)}%;font-size:${R(16,38)}px;opacity:${R(.65,1)};animation-duration:${du}s;animation-delay:${-R(0,du)}s;--dx:${NR?-4:R(-18,18)}vw;--rt:${NR?0:R(-360,360)}deg`;L.appendChild(s);return s}
+let tm=[];
+function build(k){document.querySelectorAll('.sz,.tt,.fog,.eye,.pk,.bl,.bar').forEach(e=>e.remove());tm.forEach(clearTimeout);tm=[];B.classList.remove('horror','dk');$('#fls').textContent='شغّل النور';stopAmb();document.documentElement.style.removeProperty('--p');NR=MT=0;if(!k)return;
+const t=T[k],n=SM?14:30,L=document.createElement('div'),r=document.documentElement.style;L.className='sz';L.innerHTML='<b></b>';r.setProperty('--p',t.c);r.setProperty('--sg',t.g);NR=t.nr||0;MT=t.mt||0;
+if(!RM){(t.f||[]).length&&Array.from({length:n*(t.q||1)},()=>sp(L,'f',A(t.f),R(...(t.sp||[9,20]))));(t.r||[]).length&&Array.from({length:n/2|0},()=>sp(L,'r',A(t.r),R(...(t.sp||[10,22]))));(t.y||[]).length&&Array.from({length:SM?3:5},()=>sp(L,'y',A(t.y),R(12,24)).style.top=R(8,60)+'%')}
+(t.h||[]).forEach(h=>{const e=document.createElement('div');e.className='hg';e.style.cssText=`left:${h.l}%;height:${h.n}px;animation-duration:${R(2.4,4)}s;animation-delay:${-R(0,3)}s`;e.innerHTML='<span>'+h.e+'</span>';L.appendChild(e)});
+if(t.mn)L.insertAdjacentHTML('beforeend','<div class="mn">🌙</div>');
+if(t.lg){const c=['#ff4d5e','#ffd54d','#4dff88','#4db8ff'];let s='';for(let i=0;i<(SM?12:26);i++)s+=`<i style="color:${c[i%4]};animation-delay:${-i*.15}s"></i>`;L.insertAdjacentHTML('beforeend','<div class="lg">'+s+'</div>')}
+document.body.appendChild(L);
+const tt=document.createElement('div');tt.className='tt';tt.textContent=t.m;document.body.appendChild(tt);tm.push(setTimeout(()=>tt.classList.add('on'),800),setTimeout(()=>tt.classList.remove('on'),5200));
+if(k=='halloween')horror()}
+function horror(){B.classList.add('horror');if(matchMedia('(hover:hover)').matches&&!RM)B.classList.add('dk');
+for(let i=0;i<2;i++){const f=document.createElement('div');f.className='fog';f.style.animationDelay=-i*8+'s';f.style.bottom=-5+i*8+'%';document.body.appendChild(f)}
+for(let i=0;i<(SM?3:6);i++){const e=document.createElement('div');e.className='eye';e.style.cssText=`left:${R(3,85)}%;top:${R(10,85)}%;animation-delay:${-R(0,6)}s;animation-duration:${R(5,9)}s`;document.body.appendChild(e)}
+const cd=$('#card');cd.insertAdjacentHTML('afterbegin','<div class="bar"></div>');for(let i=0;i<7;i++){const b=document.createElement('div');b.className='bl';b.style.cssText=`left:${8+i*13+R(0,5)}%;--h:${R(30,95)}px;animation-delay:${-R(0,5)}s;animation-duration:${R(4,7)}s`;cd.appendChild(b)}
+['3%','auto'].forEach((l,i)=>{const p=document.createElement('div');p.className='pk';p.textContent='🎃';p.style[i?'right':'left']='3%';p.onclick=()=>{p.classList.remove('s');void p.offsetWidth;p.classList.add('s');growl();burst(p.getBoundingClientRect().left+27,p.getBoundingClientRect().top+27,['#ff7518','#ffb347','#ff0000'],20);navigator.vibrate&&navigator.vibrate(120)};document.body.appendChild(p)});
+if(AC&&AC.state=='running')ambient();
+RM||(function bolt(){tm.push(setTimeout(()=>{const f=$('#fx');f.classList.remove('z');void f.offsetWidth;f.classList.add('z');navigator.vibrate&&navigator.vibrate([150,80,250]);tm.push(setTimeout(thunder,400+R(0,500)));bolt()},R(9e3,20e3)))})();
+(function ev(){tm.push(setTimeout(()=>{A([creak,creak,screech])();ev()},R(7e3,16e3)))})()}
+$('#jb').onclick=()=>{const s=$('#sc');s.classList.add('on');screech();growl();navigator.vibrate&&navigator.vibrate([300,100,400]);setTimeout(()=>s.classList.remove('on'),1400)};
+addEventListener('pointerdown',()=>{ac();ambient()});
+addEventListener('hashchange',()=>build(pick()));
+build(pick());
+addEventListener('load',()=>setTimeout(()=>{const i=document.querySelector('.lk i'),c=getComputedStyle(i,'::before').content,sw=()=>document.querySelectorAll('.lk i').forEach(e=>{e.className='';e.textContent=e.dataset.e});if(!c||c=='none'||c=='normal')sw();else document.fonts.load('900 1em "Font Awesome 6 Free"').then(f=>{if(!f.length)sw()}).catch(sw)},900));
+</script>
 </body>
 </html>
