@@ -1631,6 +1631,144 @@
             console.log('🌈 قوس قزح: انقر على الاسم');
             console.log('🎆 ألعاب نارية: ظهرت عند الوصول');
         };
+   /* ===== مؤثرات المواسم ===== */
+(function () {
+  var THEMES = {
+    halloween: { color: '#ff7518', glow: 'rgba(255,117,24,.38)', msg: '🎃 هالوين مرعب! 👻',
+      fall: ['🎃','🎃','👻','🍬','🕸️'], fly: ['🦇','🦇'], hang: [{e:'🕷️',l:12,len:90},{e:'🕷️',l:82,len:140}] },
+    christmas: { color: '#ff4d5e', glow: 'rgba(255,77,94,.28)', msg: '🎄 كريسمس مجيد! 🎅',
+      fall: ['❄️','❄️','❄️','🎁','⭐'], fly: ['🦌'], lights: true },
+    ramadan: { color: '#f5c542', glow: 'rgba(245,197,66,.30)', msg: '🌙 رمضان كريم ✨',
+      fall: ['⭐','✨','🌟'], fly: [], moon: true,
+      hang: [{e:'🏮',l:8,len:70},{e:'🏮',l:28,len:120},{e:'🏮',l:52,len:60},{e:'🏮',l:74,len:130},{e:'🏮',l:92,len:80}] },
+    eid: { color: '#ff7ac6', glow: 'rgba(255,122,198,.30)', msg: '🎉 عيدكم مبارك وكل عام وأنتم بخير 🌙',
+      rise: ['🎈','🎈','🎈','🎉','🍬'], fall: ['✨','🎊'] },
+    newyear: { color: '#ffd700', glow: 'rgba(255,215,0,.30)', msg: '🎆 سنة جديدة سعيدة! 🥳',
+      fall: ['🎊','🎉','✨','🎆'], rise: ['🎈'] },
+    founding: { color: '#1fa24a', glow: 'rgba(31,162,74,.34)', msg: '🇸🇦 يوم التأسيس مبارك 🌴',
+      fall: ['🌴','🇸🇦','🌿','✨'] },
+    national: { color: '#1fa24a', glow: 'rgba(31,162,74,.34)', msg: '🇸🇦 اليوم الوطني السعودي، عز الوطن 💚',
+      fall: ['🇸🇦','🌴','💚','🦅','✨'], rise: ['🎈'] }
+  };
+
+  function hijri(date) {
+    try {
+      var o = {};
+      new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { day: 'numeric', month: 'numeric' })
+        .formatToParts(date).forEach(function (p) { o[p.type] = parseInt(p.value, 10); });
+      return { m: o.month, d: o.day };
+    } catch (e) { return { m: 0, d: 0 }; }
+  }
+
+  function pick() {
+    var h = (location.hash || '').replace('#', '');
+    if (THEMES[h]) return h;
+    var now = new Date(), hj = hijri(now), m = now.getMonth() + 1, d = now.getDate();
+    if (hj.m === 9) return 'ramadan';
+    if ((hj.m === 10 && hj.d <= 4) || (hj.m === 12 && hj.d >= 10 && hj.d <= 13)) return 'eid';
+    if (m === 1 && d <= 7) return 'newyear';
+    if (m === 2 && d >= 20 && d <= 23) return 'founding';
+    if (m === 9 && d >= 20 && d <= 24) return 'national';
+    if (m === 10) return 'halloween';
+    if (m === 12) return 'christmas';
+    return null;
+  }
+
+  var css = '.sz-layer{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden}' +
+    '.sz-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 110%,var(--sz-glow),transparent 60%),radial-gradient(ellipse at 50% -10%,var(--sz-glow),transparent 55%)}' +
+    '.sz-p{position:absolute;will-change:transform;user-select:none}' +
+    '.sz-fall{top:-10vh;animation:szFall linear infinite}' +
+    '.sz-rise{bottom:-12vh;animation:szRise linear infinite}' +
+    '.sz-fly{left:-12vw;animation:szFly linear infinite}' +
+    '@keyframes szFall{to{transform:translate3d(var(--dx),115vh,0) rotate(var(--rot))}}' +
+    '@keyframes szRise{to{transform:translate3d(var(--dx),-120vh,0) rotate(var(--rot))}}' +
+    '@keyframes szFly{0%{transform:translate3d(0,0,0) scaleY(1)}25%{transform:translate3d(30vw,-4vh,0) scaleY(.7)}50%{transform:translate3d(60vw,3vh,0) scaleY(1)}75%{transform:translate3d(90vw,-5vh,0) scaleY(.7)}100%{transform:translate3d(125vw,0,0) scaleY(1)}}' +
+    '.sz-hang{position:absolute;top:0;width:2px;transform-origin:top center;animation:szSwing ease-in-out infinite alternate}' +
+    '.sz-hang::before{content:"";position:absolute;top:0;left:0;width:1px;height:100%;background:rgba(255,255,255,.55)}' +
+    '.sz-hang span{position:absolute;top:100%;left:50%;transform:translate(-50%,-6px);font-size:30px;line-height:1}' +
+    '@keyframes szSwing{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}' +
+    '.sz-moon{position:absolute;top:70px;left:6%;font-size:64px;filter:drop-shadow(0 0 25px rgba(245,197,66,.8));animation:szPulse 4s ease-in-out infinite}' +
+    '@keyframes szPulse{50%{transform:scale(1.1) rotate(-6deg)}}' +
+    '.sz-lights{position:absolute;top:0;left:0;right:0;height:26px;display:flex;justify-content:space-around}' +
+    '.sz-lights i{width:10px;height:14px;border-radius:50%;margin-top:8px;animation:szBlink 1.6s ease-in-out infinite;box-shadow:0 0 12px currentColor;background:currentColor}' +
+    '@keyframes szBlink{50%{opacity:.25}}' +
+    '.sz-toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,40px);opacity:0;z-index:100000;padding:12px 22px;border-radius:30px;background:var(--container-bg,rgba(255,255,255,.12));border:1px solid var(--sz-color);backdrop-filter:blur(14px);color:var(--text-color,#fff);font-weight:700;box-shadow:0 0 25px var(--sz-glow);transition:all .6s;pointer-events:none;white-space:nowrap}' +
+    '.sz-toast.on{opacity:1;transform:translate(-50%,0)}' +
+    '@media (prefers-reduced-motion:reduce){.sz-p,.sz-hang,.sz-moon,.sz-lights i{animation:none!important}}';
+
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  function any(a) { return a[Math.floor(Math.random() * a.length)]; }
+
+  function particle(layer, cls, emoji, dur) {
+    var s = document.createElement('span');
+    s.className = 'sz-p ' + cls;
+    s.textContent = emoji;
+    s.style.left = rnd(0, 100) + '%';
+    s.style.fontSize = rnd(16, 38) + 'px';
+    s.style.opacity = rnd(.65, 1);
+    s.style.animationDuration = dur + 's';
+    s.style.animationDelay = (-rnd(0, dur)) + 's';
+    s.style.setProperty('--dx', rnd(-18, 18) + 'vw');
+    s.style.setProperty('--rot', rnd(-360, 360) + 'deg');
+    layer.appendChild(s);
+    return s;
+  }
+
+  function build(name) {
+    var o = document.querySelector('.sz-layer'); if (o) o.remove();
+    var ot = document.querySelector('.sz-toast'); if (ot) ot.remove();
+    if (!name) { document.documentElement.style.removeProperty('--primary-color'); return; }
+    var t = THEMES[name], small = window.innerWidth < 768, n = small ? 14 : 30, i;
+    var root = document.documentElement.style;
+    root.setProperty('--primary-color', t.color);
+    root.setProperty('--sz-glow', t.glow);
+    root.setProperty('--sz-color', t.color);
+
+    var layer = document.createElement('div');
+    layer.className = 'sz-layer';
+    layer.innerHTML = '<div class="sz-glow"></div>';
+
+    if (t.fall) for (i = 0; i < n; i++) particle(layer, 'sz-fall', any(t.fall), rnd(9, 20));
+    if (t.rise) for (i = 0; i < Math.round(n / 2); i++) particle(layer, 'sz-rise', any(t.rise), rnd(10, 22));
+    if (t.fly && t.fly.length) for (i = 0; i < (small ? 3 : 5); i++) {
+      particle(layer, 'sz-fly', any(t.fly), rnd(12, 24)).style.top = rnd(8, 60) + '%';
+    }
+    if (t.hang) t.hang.forEach(function (h) {
+      var el = document.createElement('div');
+      el.className = 'sz-hang';
+      el.style.left = h.l + '%';
+      el.style.height = h.len + 'px';
+      el.style.animationDuration = rnd(2.4, 4) + 's';
+      el.style.animationDelay = (-rnd(0, 3)) + 's';
+      el.innerHTML = '<span>' + h.e + '</span>';
+      layer.appendChild(el);
+    });
+    if (t.moon) { var mo = document.createElement('div'); mo.className = 'sz-moon'; mo.textContent = '🌙'; layer.appendChild(mo); }
+    if (t.lights) {
+      var L = document.createElement('div'), cols = ['#ff4d5e','#ffd54d','#4dff88','#4db8ff'], k, c = small ? 12 : 26;
+      L.className = 'sz-lights';
+      for (k = 0; k < c; k++) L.innerHTML += '<i style="color:' + cols[k % 4] + ';animation-delay:' + (-k * .15) + 's"></i>';
+      layer.appendChild(L);
+    }
+    document.body.appendChild(layer);
+
+    var toast = document.createElement('div');
+    toast.className = 'sz-toast';
+    toast.textContent = t.msg;
+    document.body.appendChild(toast);
+    setTimeout(function () { toast.classList.add('on'); }, 800);
+    setTimeout(function () { toast.classList.remove('on'); }, 5200);
+  }
+
+  var st = document.createElement('style');
+  st.textContent = css;
+  document.head.appendChild(st);
+
+  function init() { build(pick()); }
+  if (document.readyState === 'complete') init(); else window.addEventListener('load', init);
+  window.addEventListener('hashchange', init);
+})();
+/* ===== نهاية مؤثرات المواسم ===== */
     </script>
 </body>
 </html>
